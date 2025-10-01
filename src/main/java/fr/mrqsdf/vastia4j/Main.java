@@ -1,5 +1,6 @@
 package fr.mrqsdf.vastia4j;
 
+import fr.mrqsdf.vastia4j.model.AccountBalance;
 import fr.mrqsdf.vastia4j.model.OfferListResponse;
 import fr.mrqsdf.vastia4j.query.OfferQuery;
 
@@ -21,7 +22,7 @@ public final class Main {
 
         AccountBalance balance = vastAI.account().getBalance();
         System.out.println("Balance: " + balance.getBalance() + " (credit: " + balance.getCredit() + ")");
-        OfferListResponse response = vastAI.offers().listBestOffers(OfferQuery.create().verified(true));
+        OfferListResponse response = vastAI.offers().listBestOffers(OfferQuery.create().maxPrice(10).verified(false));
         System.out.println("Found " + response.getCount() + " offers");
     }
 }
