@@ -30,6 +30,7 @@ public class VastAIClient {
 
     public static final String DEFAULT_BASE_URL = "https://vast.ai/api/";
 
+
     private final HttpClient httpClient;
     private final Gson gson;
     private final String apiKey;
@@ -46,6 +47,7 @@ public class VastAIClient {
     public VastAIClient(String apiKey, String baseUrl, HttpClient httpClient, Gson gson) {
         this.apiKey = Objects.requireNonNull(apiKey, "apiKey");
         this.baseUri = normalizeBaseUri(Objects.requireNonNull(baseUrl, "baseUrl"));
+
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
         this.gson = Objects.requireNonNull(gson, "gson");
     }

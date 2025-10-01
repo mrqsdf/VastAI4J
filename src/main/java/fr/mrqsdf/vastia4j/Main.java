@@ -18,6 +18,9 @@ public final class Main {
         }
 
         VastAI vastAI = new VastAI(args[0]);
+
+        AccountBalance balance = vastAI.account().getBalance();
+        System.out.println("Balance: " + balance.getBalance() + " (credit: " + balance.getCredit() + ")");
         OfferListResponse response = vastAI.offers().listBestOffers(OfferQuery.create().verified(true));
         System.out.println("Found " + response.getCount() + " offers");
     }
