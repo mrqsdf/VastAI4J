@@ -1,5 +1,6 @@
 package fr.mrqsdf.vastia4j;
 
+import fr.mrqsdf.vastia4j.model.AccountBalance;
 import fr.mrqsdf.vastia4j.model.OfferListResponse;
 import fr.mrqsdf.vastia4j.query.OfferQuery;
 
@@ -7,6 +8,8 @@ import fr.mrqsdf.vastia4j.query.OfferQuery;
  * Small demonstration of the Vast.ai Java client.
  */
 public final class Main {
+
+    // Main de test
 
     private Main() {
     }
@@ -18,6 +21,8 @@ public final class Main {
         }
 
         VastAI vastAI = new VastAI(args[0]);
+        AccountBalance balance = vastAI.account().getBalance();
+        System.out.println("Balance: " + balance.getBalance() + " (credit: " + balance.getCredit() + ")");
         OfferListResponse response = vastAI.offers().listBestOffers(OfferQuery.create().verified(true));
         System.out.println("Found " + response.getCount() + " offers");
     }
