@@ -28,7 +28,8 @@ import java.util.Optional;
  */
 public class VastAIClient {
 
-    public static final String DEFAULT_BASE_URL = "https://api.vast.ai";
+    public static final String DEFAULT_BASE_URL = "https://vast.ai/api/";
+
 
     private final HttpClient httpClient;
     private final Gson gson;
@@ -45,9 +46,18 @@ public class VastAIClient {
 
     public VastAIClient(String apiKey, String baseUrl, HttpClient httpClient, Gson gson) {
         this.apiKey = Objects.requireNonNull(apiKey, "apiKey");
-        this.baseUri = URI.create(Objects.requireNonNull(baseUrl, "baseUrl"));
+        this.baseUri = normalizeBaseUri(Objects.requireNonNull(baseUrl, "baseUrl"));
+
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
         this.gson = Objects.requireNonNull(gson, "gson");
+    }
+
+    private static URI normalizeBaseUri(String baseUrl) {
+        String normalized = baseUrl.trim();
+        if (!normalized.endsWith("/")) {
+            normalized = normalized + "/";
+        }
+        return URI.create(normalized);
     }
 
     public static HttpClient defaultHttpClient() {
@@ -182,9 +192,9 @@ public class VastAIClient {
     }
 
     private String resolvePath(String path) {
-        if (!path.startsWith("/")) {
-            return "/" + path;
+        if (path == null || path.isEmpty()) {
+            return "";
         }
-        return path;
+        return path.startsWith("/") ? path.substring(1) : path;
     }
 }
