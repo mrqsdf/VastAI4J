@@ -3,12 +3,13 @@ package fr.mrqsdf.vastia4j;
 import fr.mrqsdf.vastia4j.model.AccountBalance;
 import fr.mrqsdf.vastia4j.model.Offer;
 import fr.mrqsdf.vastia4j.model.Template;
+import fr.mrqsdf.vastia4j.model.instance.CreateInstanceRequest;
+import fr.mrqsdf.vastia4j.model.instance.CreateInstanceResponse;
+import fr.mrqsdf.vastia4j.model.instance.InstanceDetails;
+import fr.mrqsdf.vastia4j.model.instance.RunType;
 import fr.mrqsdf.vastia4j.query.*;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /** Small demonstration of the Vast.ai Java client. */
 public final class Main {
@@ -69,6 +70,47 @@ public final class Main {
         VastAI alt = new VastAI(args[0], "https://cloud.vast.ai/api/v0");
         List<Template> t = alt.templates().searchAll(null, null);
         System.out.println("templates via cloud.vast.ai = " + t.size());*/
+
+        long offerId = offers.get(0).id();
+        long templateId = -1; // mettre un id de template si besoin, sinon null
+
+        CreateInstanceRequest req = new CreateInstanceRequest()
+                .templateId(null)  // <- tu peux mettre null si tu utilises "image"
+                .templateHashId("a910281dde7abd591fe1c8a7ee9312d6") // <- ou le hashId (this is demo ID, you can't use it, is for demo only)
+                //.image("nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04") // si pas de template
+                .disk(35.0)                                             // >= 8
+                .runtypeEnum(RunType.SSH)                                // ou JUPYTER
+                .targetState("running")
+                .label("java-sdk-demo");                 // ou "stopped"
+
+        CreateInstanceResponse created = vastAI.instances().createInstance(offerId, req);
+        System.out.println("Create success=" + created.success() + " new_contract=" + created.newContract());
+
+        // NB: l'id d’instance (= id du contrat) est généralement "new_contract"
+        long instanceId = created.newContract();
+
+        // 2) Afficher les infos
+        InstanceDetails details = vastAI.instances().show(instanceId);
+        System.out.println("Instance #" + details.instances().id()
+                + " state=" + details.instances().curState()
+                + " ssh=" + details.instances().sshHost() + ":" + details.instances().sshPort());
+
+        // 3) Stopper
+        //vastAI.instances().stop(instanceId);
+        System.out.println("Stopped instance " + instanceId);
+
+        // 4) Redémarrer (start)
+        //vastAI.instances().start(instanceId);
+        System.out.println("Started instance " + instanceId);
+
+        // 5) Reboot (stop/start interne)
+        //vastAI.instances().reboot(instanceId);
+        System.out.println("Rebooted instance " + instanceId);
+
+        // 6) Détruire
+        //vastAI.instances().destroy(instanceId);
+        System.out.println("Destroyed instance " + instanceId);
+
     }
 
     private static double nz(Double d) { return d == null ? Double.NaN : d; }
