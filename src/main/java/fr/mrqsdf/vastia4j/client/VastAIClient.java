@@ -4,6 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import fr.mrqsdf.vastia4j.auth.ApiRights;
+import fr.mrqsdf.vastia4j.auth.EndpointMethods;
+import fr.mrqsdf.vastia4j.auth.Right;
+import fr.mrqsdf.vastia4j.gson.ApiRightsAdapter;
+import fr.mrqsdf.vastia4j.gson.EndpointMethodsAdapter;
 import fr.mrqsdf.vastia4j.http.HttpMethod;
 import fr.mrqsdf.vastia4j.http.VastAIException;
 import fr.mrqsdf.vastia4j.http.VastAIRequest;
@@ -28,7 +33,7 @@ import java.util.Optional;
  */
 public class VastAIClient {
 
-    public static final String DEFAULT_BASE_URL = "https://vast.ai/api/";
+    public static final String DEFAULT_BASE_URL = "https://console.vast.ai/api/v0";
 
 
     private final HttpClient httpClient;
@@ -68,6 +73,8 @@ public class VastAIClient {
 
     public static Gson defaultGson() {
         return new GsonBuilder()
+                .registerTypeAdapter(ApiRights.class, new ApiRightsAdapter())
+                .registerTypeAdapter(EndpointMethods.class, new EndpointMethodsAdapter())
                 .serializeNulls()
                 .create();
     }
@@ -93,7 +100,9 @@ public class VastAIClient {
         if (responseType == String.class) {
             return (T) httpResponse.body();
         }
-        return gson.fromJson(httpResponse.body(), responseType);
+        String body = httpResponse.body();
+        //System.out.println("DEBUG: Vast.ai response for " + request.getPath() + ": " + body);
+        return gson.fromJson(body, responseType);
     }
 
     public JsonElement executeJson(VastAIRequest request) {
@@ -130,12 +139,12 @@ public class VastAIClient {
     private HttpRequest buildHttpRequest(VastAIRequest request) {
         String resolvedPath = resolvePath(request.getPath());
         Map<String, String> queryParams = new LinkedHashMap<>(request.getQueryParams());
-        queryParams.putIfAbsent("api_key", apiKey);
 
         String query = buildQueryString(queryParams);
         URI uri = baseUri.resolve(resolvedPath + query);
 
         HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .header("Authorization", "Bearer " + apiKey)
                 .uri(uri)
                 .timeout(Duration.ofSeconds(30));
 

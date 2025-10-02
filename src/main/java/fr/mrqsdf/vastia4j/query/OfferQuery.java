@@ -1,64 +1,125 @@
 package fr.mrqsdf.vastia4j.query;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.*;
 
 /**
- * Builder that helps constructing complex offer query parameters.
+ * Builder pour requêtes de recherche Vast (POST /bundles/ ou PUT /search/asks/).
+ * Conserve les méthodes String ET ajoute des surcharges avec enums.
  */
-public class OfferQuery {
+public final class OfferQuery {
 
-    private final Map<String, Object> parameters = new LinkedHashMap<>();
+    private final Map<String, JsonObject> filters = new LinkedHashMap<>();
+    private final List<OrderBy> order = new ArrayList<>();
 
-    public static OfferQuery create() {
-        return new OfferQuery();
-    }
+    private String type = "on-demand";
+    private Integer limit = null;
+    private Double allocatedStorageGiB = 5.0;
+    private boolean disableBundling = false;
+    private boolean noDefault = false;
 
-    private OfferQuery() {
-    }
+    public OfferQuery type(String type) { this.type = Objects.requireNonNull(type); return this; }
+    public OfferQuery limit(Integer limit) { this.limit = limit; return this; }
+    public OfferQuery allocatedStorageGiB(Double gib) { this.allocatedStorageGiB = gib; return this; }
+    public OfferQuery disableBundling(boolean v) { this.disableBundling = v; return this; }
+    public OfferQuery noDefault(boolean v) { this.noDefault = v; return this; }
 
-    public OfferQuery minVcpu(Number value) {
-        return put("min_vcpu", value);
-    }
-
-    public OfferQuery maxPrice(Number value) {
-        return put("max_price", value);
-    }
-
-    public OfferQuery minGpuMem(Number value) {
-        return put("min_gpu_ram", value);
-    }
-
-    public OfferQuery verified(Boolean verified) {
-        return put("verified", verified);
-    }
-
-    public OfferQuery type(String type) {
-        return put("type", type);
-    }
-
-    public OfferQuery with(String key, Object value) {
-        return put(key, value);
-    }
-
-    public Map<String, String> toQueryParams() {
-        Map<String, String> params = new LinkedHashMap<>();
-        parameters.forEach((key, value) -> {
-            if (value != null) {
-                params.put(key, String.valueOf(value));
-            }
-        });
-        return params;
-    }
-
-    private OfferQuery put(String key, Object value) {
-        Objects.requireNonNull(key, "key");
-        if (value == null) {
-            parameters.remove(key);
-        } else {
-            parameters.put(key, value);
-        }
+    // ---------- WHERE : versions String (déjà existantes) ----------
+    public OfferQuery where(String field, Op op, JsonElement value) {
+        Objects.requireNonNull(field); Objects.requireNonNull(op); Objects.requireNonNull(value);
+        JsonObject cond = filters.computeIfAbsent(field, k -> new JsonObject());
+        cond.add(op.jsonKey(), value);
         return this;
+    }
+    public OfferQuery where(String field, Op op, String value) { return where(field, op, new com.google.gson.JsonPrimitive(value)); }
+    public OfferQuery where(String field, Op op, Number value) { return where(field, op, new com.google.gson.JsonPrimitive(value)); }
+    public OfferQuery where(String field, Op op, boolean value) { return where(field, op, new com.google.gson.JsonPrimitive(value)); }
+    public OfferQuery where(String field, Op op, Collection<?> values) {
+        JsonArray arr = new JsonArray();
+        for (Object o : values) {
+            if (o instanceof Number n) arr.add(n);
+            else if (o instanceof Boolean b) arr.add(b);
+            else arr.add(String.valueOf(o));
+        }
+        return where(field, op, arr);
+    }
+
+    // ---------- WHERE : surcharges Enum ----------
+    public OfferQuery where(OfferField field, Op op, JsonElement value) {
+        return where(field.json(), op, value);
+    }
+    public OfferQuery where(OfferField field, Op op, String value) {
+        return where(field.json(), op, value);
+    }
+    public OfferQuery where(OfferField field, Op op, Number value) {
+        return where(field.json(), op, value);
+    }
+    public OfferQuery where(OfferField field, Op op, boolean value) {
+        return where(field.json(), op, value);
+    }
+    public OfferQuery where(OfferField field, Op op, Collection<?> values) {
+        return where(field.json(), op, values);
+    }
+
+    // ---------- ORDER : version String (déjà existante) ----------
+    public OfferQuery orderBy(String field, Direction dir) {
+        order.add(new OrderBy(field, dir));
+        return this;
+    }
+
+    // ---------- ORDER : surcharge Enum ----------
+    public OfferQuery orderBy(OrderField field, Direction dir) {
+        return orderBy(field.json(), dir);
+    }
+
+    // ---------- Build payload ----------
+    public JsonObject toQueryJson() {
+        JsonObject q = new JsonObject();
+        if (!noDefault) {
+            q.add("verified", one("eq", true));
+            q.add("external", one("eq", false));
+            q.add("rentable", one("eq", true));
+            q.add("rented",   one("eq", false));
+        }
+        for (Map.Entry<String, JsonObject> e : filters.entrySet()) {
+            JsonObject dest = q.has(e.getKey()) && q.get(e.getKey()).isJsonObject()
+                    ? q.getAsJsonObject(e.getKey()) : new JsonObject();
+            for (Map.Entry<String, JsonElement> kv : e.getValue().entrySet()) {
+                dest.add(kv.getKey(), kv.getValue());
+            }
+            q.add(e.getKey(), dest);
+        }
+        if (!order.isEmpty()) {
+            JsonArray arr = new JsonArray();
+            for (OrderBy ob : order) {
+                JsonArray pair = new JsonArray();
+                pair.add(ob.field());
+                pair.add(ob.direction().json());
+                arr.add(pair);
+            }
+            q.add("order", arr);
+        }
+        q.addProperty("type", type);
+        if (limit != null) q.addProperty("limit", limit);
+        if (allocatedStorageGiB != null) q.addProperty("allocated_storage", allocatedStorageGiB);
+        if (disableBundling) q.addProperty("disable_bundling", true);
+        return q;
+    }
+
+    public com.google.gson.JsonObject toSearchAsksPayload() {
+        com.google.gson.JsonObject root = new com.google.gson.JsonObject();
+        com.google.gson.JsonArray select = new com.google.gson.JsonArray(); select.add("*");
+        root.add("select_cols", select);
+        root.add("q", toQueryJson());
+        return root;
+    }
+
+    private static JsonObject one(String key, boolean val) {
+        JsonObject o = new JsonObject();
+        o.addProperty(key, val);
+        return o;
     }
 }
