@@ -2,6 +2,7 @@ package fr.mrqsdf.vastia4j;
 
 import fr.mrqsdf.vastia4j.model.AccountBalance;
 import fr.mrqsdf.vastia4j.model.Offer;
+import fr.mrqsdf.vastia4j.model.Template;
 import fr.mrqsdf.vastia4j.query.*;
 
 import java.util.Collections;
@@ -24,6 +25,7 @@ public final class Main {
         // 1) Balance
         AccountBalance balance = vastAI.account().getBalance();
         System.out.println("Balance: " + balance.balance() + " (credit: " + balance.credit() + ")");
+        long userId = vastAI.account().getClient().getId();
 
         // 2) Recherche d’offres :
         // - tri par score (desc)
@@ -47,6 +49,26 @@ public final class Main {
                     o.rentable()
             );
         }
+
+        /*List<Template> publicTemplates = vastAI.templates()
+                .searchAll("pytorch", "created_at");
+        System.out.println("\nPublic templates (pytorch):");
+        for (Template t : publicTemplates) {
+            System.out.printf("- #%d %s | image=%s | public=%s%n",
+                    t.id(), t.name(), t.image(), t.isPublic());
+        };
+
+// 4) Mes templates uniquement (filtre serveur) + tri par date de création
+        var myTemplates = vastAI.templates().searchMyTemplates(null, "created_at");
+        System.out.println("\nMy templates:");
+        for (var t : myTemplates) {
+            System.out.printf("- #%d %s | hash=%s%n", t.id(), t.name(), t.hashId());
+        }
+
+
+        VastAI alt = new VastAI(args[0], "https://cloud.vast.ai/api/v0");
+        List<Template> t = alt.templates().searchAll(null, null);
+        System.out.println("templates via cloud.vast.ai = " + t.size());*/
     }
 
     private static double nz(Double d) { return d == null ? Double.NaN : d; }

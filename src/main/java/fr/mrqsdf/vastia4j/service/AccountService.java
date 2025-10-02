@@ -38,4 +38,8 @@ public class AccountService implements Service {
     public void update() {
 
     }
+
+    public CurrentUser getClient() {
+        return loadCurrentUser();
+    }
 }
