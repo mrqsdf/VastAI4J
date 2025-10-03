@@ -1,12 +1,12 @@
 package fr.mrqsdf.vastia4j.query;
 
 /**
- * Champs de tri. La CLI autorise de trier sur plusieurs des champs "offers".
- * On inclut aussi "score" (valeur par défaut côté CLI : score desc).
+ * Sortable fields supported by the Vast.ai CLI and API when ordering offer results.
+ * The special {@code score} column is included because it is the default ordering used by the CLI.
  */
 public enum OrderField {
     SCORE("score"),
-    // Les suivants sont pratiques en tri :
+    // Additional columns that are handy to expose for ordering:
     NUM_GPUS("num_gpus"),
     DLPERF("dlperf"),
     DLPERF_USD("dlperf_usd"),

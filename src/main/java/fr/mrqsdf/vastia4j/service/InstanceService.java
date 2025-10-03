@@ -10,13 +10,15 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Service pour créer/gérer des instances Vast.ai
- * Endpoints :
- * - PUT  /api/v0/asks/{offerId}/                 (create)
- * - PUT  /api/v0/instances/{id}/                 (start/stop/label)
- * - PUT  /api/v0/instances/reboot/{id}/          (reboot)
- * - DELETE /api/v0/instances/{id}/               (destroy)
- * - GET  /api/v0/instances/{id}/                 (show)
+ * Service responsible for managing Vast.ai instances.
+ * <p>The implementation maps the high-level operations documented by Vast.ai:</p>
+ * <ul>
+ *     <li>{@code PUT /api/v0/asks/{offerId}/} to accept an ask and create an instance</li>
+ *     <li>{@code PUT /api/v0/instances/{id}/} to change the target state or label</li>
+ *     <li>{@code PUT /api/v0/instances/reboot/{id}/} to perform an in-place reboot</li>
+ *     <li>{@code DELETE /api/v0/instances/{id}/} to destroy an instance</li>
+ *     <li>{@code GET /api/v0/instances/{id}/} to retrieve instance details</li>
+ * </ul>
  */
 public final class InstanceService implements Service {
 
@@ -27,12 +29,16 @@ public final class InstanceService implements Service {
     }
 
     /**
-     * Crée une instance en acceptant l’offre (ask) {offerId}.
+     * Accepts an ask and creates a new instance.
+     *
+     * @param offerId identifier of the ask to accept
+     * @param in      request payload describing the instance configuration
+     * @return the response returned by Vast.ai after provisioning
      */
     public CreateInstanceResponse createInstance(long offerId, CreateInstanceRequest in) {
         com.google.gson.JsonObject body = new com.google.gson.JsonObject();
 
-        // Exiger un tag d'image si image est fournie
+        // Enforce a version tag when a custom image is provided.
         if (in.getImage() != null) {
             String img = in.getImage();
             if (!img.contains(":")) {
@@ -44,12 +50,12 @@ public final class InstanceService implements Service {
         if (in.getTemplateId() != null) body.addProperty("template_id", in.getTemplateId());
         if (in.getTemplateHashId() != null) body.addProperty("template_hash_id", in.getTemplateHashId());
 
-        // disk >= 8
+        // Vast.ai requires at least 8 GB of disk space.
         double disk = (in.getDisk() == null ? 10.0 : in.getDisk());
         if (disk < 8.0) throw new IllegalArgumentException("disk must be >= 8 GB");
         body.addProperty("disk", disk);
 
-        if (in.getRuntype() != null) body.addProperty("runtype", in.getRuntype()); // "ssh" | "jupyter" | "args" | ...
+        if (in.getRuntype() != null) body.addProperty("runtype", in.getRuntype());
         if (in.getOnstart() != null) body.addProperty("onstart", in.getOnstart());
         if (in.getLabel() != null) body.addProperty("label", in.getLabel());
         if (in.getImageLogin() != null) body.addProperty("image_login", in.getImageLogin());
@@ -90,28 +96,28 @@ public final class InstanceService implements Service {
         VastAIRequest req = client.requestBuilder()
                 .put()
                 .path("/asks/" + offerId + "/")
-                .body(body)  // <-- JSON « propre » sans nulls
+                .body(body)
                 .build();
 
         return client.execute(req, CreateInstanceResponse.class);
     }
 
     /**
-     * Met l’instance à l’état "running".
+     * Transitions an instance to the {@code running} target state.
      */
     public void start(long instanceId) {
         changeState(instanceId, "running");
     }
 
     /**
-     * Met l’instance à l’état "stopped".
+     * Transitions an instance to the {@code stopped} target state.
      */
     public void stop(long instanceId) {
         changeState(instanceId, "stopped");
     }
 
     /**
-     * Ajoute/écrase un label côté serveur.
+     * Sets or replaces the server-side label associated with an instance.
      */
     public void label(long instanceId, String label) {
         VastAIRequest req = client.requestBuilder()
@@ -119,11 +125,11 @@ public final class InstanceService implements Service {
                 .path("/instances/" + instanceId + "/")
                 .body(new StateOrLabel(null, label))
                 .build();
-        client.execute(req, String.class); // pas besoin de retour typé
+        client.execute(req, String.class);
     }
 
     /**
-     * Reboot (stop/start) sans perdre la priorité GPU.
+     * Performs an in-place reboot which maintains the GPU queue priority.
      */
     public void reboot(long instanceId) {
         VastAIRequest req = client.requestBuilder()
@@ -134,7 +140,7 @@ public final class InstanceService implements Service {
     }
 
     /**
-     * Destruction définitive.
+     * Permanently destroys an instance.
      */
     public void destroy(long instanceId) {
         VastAIRequest req = client.requestBuilder()
@@ -145,7 +151,7 @@ public final class InstanceService implements Service {
     }
 
     /**
-     * Détails d’une instance (ssh/jupyter, status, template, etc.).
+     * Retrieves the details of an instance including SSH, runtype and template metadata.
      */
     public InstanceDetails show(long instanceId) {
         VastAIRequest req = client.requestBuilder()
@@ -155,7 +161,7 @@ public final class InstanceService implements Service {
         return client.execute(req, InstanceDetails.class);
     }
 
-    // --- helpers privés ---
+    // --- private helpers ---
 
     private void changeState(long instanceId, String state) {
         VastAIRequest req = client.requestBuilder()
@@ -178,7 +184,7 @@ public final class InstanceService implements Service {
     }
 
     /**
-     * Liste uniquement les instances dans un état donné (filtrage local).
+     * Filters the locally retrieved instance list by current state.
      */
     public List<InstanceSummary> listByState(String stateLowercase) {
         List<InstanceSummary> all = list();
@@ -195,7 +201,7 @@ public final class InstanceService implements Service {
     }
 
     /**
-     * petit DTO interne pour PUT /instances/{id}/
+     * Simple DTO used when toggling the state or label of an instance.
      */
     private record StateOrLabel(String state, String label) {
     }

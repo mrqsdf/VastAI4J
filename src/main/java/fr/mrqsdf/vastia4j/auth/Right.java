@@ -8,8 +8,8 @@ import fr.mrqsdf.vastia4j.http.HttpMethod;
 import java.util.*;
 
 /**
- * Représente la réponse qui contient les droits (ex: depuis /api/v0/auth/sessions/ ou similaire).
- * Exemple vu : {"rights": { ... }, "sid": 1}
+ * Represents the authentication rights payload (e.g. returned by {@code /api/v0/auth/sessions/}).
+ * A typical response resembles {@code {"rights": {...}, "sid": 1}}.
  */
 public final class Right {
 
@@ -27,11 +27,10 @@ public final class Right {
         return sid;
     }
 
-    // ---------- Modèle imbriqué ----------
+    // ---------- Nested model ----------
 
     /**
-     * Le nœud "rights" racine.
-     * On y trouve au moins: "api": { ... }
+     * Root "rights" node which typically exposes at least the {@code api} section.
      */
     public static final class Rights {
         @SerializedName("api")

@@ -28,8 +28,7 @@ public final class Main {
         System.out.println("Balance: " + balance.balance() + " (credit: " + balance.credit() + ")");
         long userId = vastAI.account().getClient().getId();
 
-        // 2) Recherche d’offres :
-        // - tri par score (desc)
+        // 2) Offer search (sorted by score descending)
         OfferQuery q = new OfferQuery()
                 .where(OfferField.GPU_NAME, Op.IN, Set.of("RTX 3060"))
                 .where(OfferField.STATIC_IP, Op.EQ, false)
@@ -59,7 +58,7 @@ public final class Main {
                     t.id(), t.name(), t.image(), t.isPublic());
         };
 
-// 4) Mes templates uniquement (filtre serveur) + tri par date de création
+// 4) Personal templates (server-side filter) sorted by creation date
         var myTemplates = vastAI.templates().searchMyTemplates(null, "created_at");
         System.out.println("\nMy templates:");
         for (var t : myTemplates) {
@@ -72,47 +71,47 @@ public final class Main {
         System.out.println("templates via cloud.vast.ai = " + t.size());*/
 
         long offerId = offers.get(0).id();
-        long templateId = -1; // mettre un id de template si besoin, sinon null
+        long templateId = -1; // Replace with a template id if you want to rely on an existing template.
 
         CreateInstanceRequest req = new CreateInstanceRequest()
-                .templateId(null)  // <- tu peux mettre null si tu utilises "image"
-                .templateHashId("a910281dde7abd591fe1c8a7ee9312d6") // <- ou le hashId (this is demo ID, you can't use it, is for demo only)
-                //.image("nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04") // si pas de template
-                .disk(35.0)                                             // >= 8
-                .runtypeEnum(RunType.SSH)                                // ou JUPYTER
+                .templateId(null)  // Set to null when providing a custom image instead.
+                .templateHashId("a910281dde7abd591fe1c8a7ee9312d6") // Demo hashId: replace with a valid value for real usage.
+                //.image("nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04") // Uncomment to rely on a public image.
+                .disk(35.0)                                             // Minimum is 8 GB.
+                .runtypeEnum(RunType.SSH)                                // Alternatively use JUPYTER.
                 .targetState("running")
-                .label("java-sdk-demo");                 // ou "stopped"
+                .label("java-sdk-demo");                 // Or "stopped" if you plan to start later.
 
         CreateInstanceResponse created = vastAI.instances().createInstance(offerId, req);
         System.out.println("Create success=" + created.success() + " new_contract=" + created.newContract());
 
-        // NB: l'id d’instance (= id du contrat) est généralement "new_contract"
+        // Instance identifiers usually match the "new_contract" value.
         long instanceId = created.newContract();
 
-        // 2) Afficher les infos
+        // 2) Retrieve details
         InstanceDetails details = vastAI.instances().show(instanceId);
         System.out.println("Instance #" + details.instances().id()
                 + " state=" + details.instances().curState()
                 + " ssh=" + details.instances().sshHost() + ":" + details.instances().sshPort());
 
-        // 3) Stopper
+        // 3) Stop
         //vastAI.instances().stop(instanceId);
         System.out.println("Stopped instance " + instanceId);
 
-        // 4) Redémarrer (start)
+        // 4) Start again
         //vastAI.instances().start(instanceId);
         System.out.println("Started instance " + instanceId);
 
-        // 5) Reboot (stop/start interne)
+        // 5) Reboot (internal stop/start)
         //vastAI.instances().reboot(instanceId);
         System.out.println("Rebooted instance " + instanceId);
 
 
-        // 1) Lister toutes les instances
+        // 1) List every instance
         List<InstanceSummary> all = vastAI.instances().list();
         System.out.println("=== Instances ===");
         if (all.isEmpty()) {
-            System.out.println("(aucune instance)");
+            System.out.println("(no instances)");
         } else {
             for (InstanceSummary s : all) {
                 System.out.printf("#%d | %s | %s | GPU=%s x%d | $/h=%.4f%n",
@@ -126,7 +125,7 @@ public final class Main {
             }
 
         }
-        // 6) Détruire
+        // 6) Destroy
         vastAI.instances().destroy(instanceId);
         System.out.println("Destroyed instance " + instanceId);
     }

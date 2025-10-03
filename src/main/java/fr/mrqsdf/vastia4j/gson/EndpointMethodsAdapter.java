@@ -15,7 +15,7 @@ public final class EndpointMethodsAdapter implements JsonDeserializer<EndpointMe
         EndpointMethods out = new EndpointMethods();
 
         if (!json.isJsonObject()) {
-            // Certains endpoints peuvent être {} (aucune méthode listée) – on retourne vide
+            // Some scopes may be empty objects (no methods listed) – return an empty mapping.
             return out;
         }
         JsonObject obj = json.getAsJsonObject();
@@ -26,7 +26,7 @@ public final class EndpointMethodsAdapter implements JsonDeserializer<EndpointMe
             try {
                 method = HttpMethod.valueOf(methodStr.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ex) {
-                // méthode inconnue → on ignore proprement
+                // Unknown HTTP verb: ignore gracefully.
                 continue;
             }
 

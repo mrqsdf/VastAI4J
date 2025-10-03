@@ -3,9 +3,10 @@ package fr.mrqsdf.vastia4j.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Modèle d’une "offer" (ask/contract) renvoyée par la recherche Vast.
- * Les champs reflètent ceux exposés par la CLI (cf. docs "search offers").
- * Ajoute/enlève librement selon tes besoins : Gson ignore les champs inconnus/absents.
+ * Data model describing an offer (ask/contract) returned by Vast.ai search endpoints.
+ * The exposed properties mirror those surfaced by the CLI "search offers" command.
+ * Additional fields can be added or removed without breaking deserialization because Gson ignores
+ * unknown or missing properties.
  */
 public record Offer(
         Long id,

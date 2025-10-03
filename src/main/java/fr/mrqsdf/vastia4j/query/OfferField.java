@@ -1,8 +1,8 @@
 package fr.mrqsdf.vastia4j.query;
 
 /**
- * Champs filtrables documentés par Vast pour "search offers".
- * Réf : docs "search offers" (Available fields).
+ * Enumerates the documented fields accepted by Vast.ai when filtering offers.
+ * Reference: "Search offers" &rarr; "Available fields" in the official API documentation.
  */
 public enum OfferField {
     BW_NVLINK("bw_nvlink"),
@@ -59,7 +59,7 @@ public enum OfferField {
     }
 
     /**
-     * Permet de retomber sur un enum si besoin (ne lève pas si inconnu).
+     * Looks up the enum constant by its JSON key without throwing when unknown.
      */
     public static OfferField fromJsonOrNull(String key) {
         for (OfferField f : values()) if (f.json.equals(key)) return f;

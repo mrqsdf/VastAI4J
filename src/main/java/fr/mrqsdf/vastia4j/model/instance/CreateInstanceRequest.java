@@ -6,49 +6,51 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Body pour PUT /api/v0/asks/{id}/ (create instance).
- * Tous les champs sont optionnels sauf le minimum imposé par Vast (ex. disk >= 8).
- * Cf. doc: template_id/template_hash_id, image, disk, env, runtype, onstart, label, price, target_state, etc.
- * Sources: "create instance" + champs détaillés (runtype, args, entrypoint...).
+ * Request payload for {@code PUT /api/v0/asks/{id}/} when creating an instance.
+ * Every field is optional apart from the minimal requirements enforced by Vast.ai (for example,
+ * the disk size must be at least 8 GB). The fields align with the "Create instance" documentation
+ * which describes {@code template_id}, {@code template_hash_id}, {@code image}, {@code disk},
+ * {@code env}, {@code runtype}, {@code onstart}, {@code label}, {@code price},
+ * {@code target_state}, and more.
  */
 public final class CreateInstanceRequest {
-    // --- Template ou image ---
+    // --- Template or image ---
     @SerializedName("template_id")
-    private Long templateId;         // ex: 89
+    private Long templateId;
     @SerializedName("template_hash_id")
-    private String templateHashId;   // ex: "abc123..."
+    private String templateHashId;
     @SerializedName("image")
-    private String image;            // ex: "tensorflow/tensorflow:latest-gpu"
+    private String image;
 
-    // --- Ressources/exec ---
+    // --- Runtime configuration ---
     @SerializedName("disk")
-    private Double disk;             // en GB (min 8)
+    private Double disk;
     @SerializedName("env")
-    private Map<String, Object> env; // variables d'env et/ou "PORTAL_CONFIG"
+    private Map<String, Object> env;
     @SerializedName("runtype")
-    private String runtype;          // "ssh" | "jupyter" | "args" | ...
+    private String runtype;
     @SerializedName("onstart")
-    private String onstart;          // script de démarrage
+    private String onstart;
     @SerializedName("label")
-    private String label;            // label libre
+    private String label;
     @SerializedName("image_login")
-    private String imageLogin;       // credentials registry
+    private String imageLogin;
     @SerializedName("price")
-    private Double price;            // bid price/h pour interruptible
+    private Double price;
     @SerializedName("target_state")
-    private String targetState;      // "running" | "stopped"
+    private String targetState;
     @SerializedName("cancel_unavail")
-    private Boolean cancelUnavail;   // annuler si démarrage impossible
+    private Boolean cancelUnavail;
     @SerializedName("vm")
-    private Boolean vm;              // VM mode
+    private Boolean vm;
     @SerializedName("client_id")
-    private String clientId;         // ex "me"
+    private String clientId;
     @SerializedName("apikey_id")
-    private String apikeyId;         // audit id
+    private String apikeyId;
     @SerializedName("args")
-    private List<String> args;       // args passés à l’entrypoint
+    private List<String> args;
     @SerializedName("entrypoint")
-    private String entrypoint;       // ex: "bash"
+    private String entrypoint;
     @SerializedName("use_ssh")
     private Boolean useSsh;
     @SerializedName("python_utf8")
@@ -64,11 +66,11 @@ public final class CreateInstanceRequest {
     @SerializedName("user")
     private String user;
 
-    // --- Volumes (optionnel) ---
+    // --- Optional volume section ---
     @SerializedName("volume_info")
     private VolumeInfo volumeInfo;
 
-    // --- Getters + Builder fluide pour la commodité ---
+    // --- Getters and fluent builder helpers ---
     public Long getTemplateId() {
         return templateId;
     }
@@ -301,7 +303,7 @@ public final class CreateInstanceRequest {
 
 
     /**
-     * Sous-volet volume optionnel.
+     * Optional nested structure describing volume attachments.
      */
     public static final class VolumeInfo {
         @SerializedName("create_new")
