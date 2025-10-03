@@ -257,3 +257,48 @@ var myTemplates = vast.templates().searchMyTemplates("diffusion", "created_at");
 ## Full Main Example
 
 See `src/main/java/.../Main.java` for a complete end-to-end sample (balance, offers, instance creation, details, and lifecycle).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Votre application
+    participant VastAI as VastAI (façade)
+    participant Offers as OfferService
+    participant Instances as InstanceService
+    participant Bus as EventBus / InstanceMonitor
+    participant API as Vast.ai REST API
+
+    App->>VastAI: new VastAI(apiKey)
+    Note right of VastAI: Initialise VastAIClient, services et EventBus
+
+    App->>Offers: offers().search(OfferQuery)
+    Offers->>API: PUT /search/asks (ou POST /bundles/)
+    API-->>Offers: List<Offer>
+    Offers-->>App: Offres (triées selon vos critères)
+
+    App->>Instances: createInstance(offerId, CreateInstanceRequest)
+    Instances->>API: POST /instances (création)
+    API-->>Instances: CreateInstanceResponse(new_contract)
+    Instances-->>App: instanceId (= new_contract)
+
+    App->>Instances: show(instanceId)
+    Instances->>API: GET /instances/{id}
+    API-->>Instances: InstanceDetails (public_ip, ssh_host, ssh_port, ports, ...)
+    Instances-->>App: Détails de l’instance
+
+    App->>Bus: register(listener)
+    App->>Bus: new InstanceMonitor(vast, bus)
+    App->>Bus: watch(instanceId, every=2s)
+    loop Polling
+        Bus->>API: GET /instances/{id}
+        API-->>Bus: État/SSH/Ports
+        Bus-->>App: InstanceStateChangeEvent / InstanceSshReadyEvent / InstancePortsMappedEvent
+    end
+
+    App->>Instances: destroy(instanceId)
+    Instances->>API: DELETE /instances/{id}
+    API-->>Instances: success=true
+    Instances-->>App: Confirmation de destruction
+    
+```
+
