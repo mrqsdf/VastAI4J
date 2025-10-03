@@ -6,6 +6,10 @@ import fr.mrqsdf.vastia4j.http.HttpMethod;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Represents the API rights associated with an API key, including named categories
+ * and dynamic scopes mapped to endpoints and their allowed HTTP methods.
+ */
 public final class ApiRights {
     /**
      * Named categories returned by Vast.ai (key = category name, value = JSON constraints/metadata).
@@ -23,10 +27,16 @@ public final class ApiRights {
      */
     private final Map<String, Map<String, EndpointMethods>> scopes = new LinkedHashMap<>();
 
+    /**
+     * @return the named categories with their associated JSON objects.
+     */
     public Map<String, JsonObject> getCategories() {
         return categories;
     }
 
+    /**
+     * @return the dynamic scopes mapped to endpoints and their allowed HTTP methods.
+     */
     public Map<String, Map<String, EndpointMethods>> getScopes() {
         return scopes;
     }
@@ -34,6 +44,13 @@ public final class ApiRights {
     /**
      * Convenience helper that checks whether a given HTTP method is authorized for an endpoint
      * within the provided scope.
+     *
+     * @param scopeKey the scope key (often {@code "*"}).
+     *                 See {@link #scopes} for possible values.
+     * @param endpoint the endpoint name (for example, {@code "api.team"} for {@code /api/team}).
+     *                 See {@link #scopes} for possible values.
+     * @param method   the HTTP method to check (for example, {@link HttpMethod#GET}).
+     * @return true if the method is allowed, false otherwise.
      */
     public boolean isAllowed(String scopeKey, String endpoint, HttpMethod method) {
         Map<String, EndpointMethods> byEndpoint = scopes.get(scopeKey);

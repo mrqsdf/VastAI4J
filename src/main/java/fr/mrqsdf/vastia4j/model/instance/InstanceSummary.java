@@ -6,6 +6,21 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Summary representation returned by {@code GET /instances/}.
  * Gson tolerates missing fields, so feel free to adjust the projection when necessary.
+ * @param id the unique identifier of the instance.
+ * @param machineId the machine ID associated with the instance.
+ * @param label the label of the instance.
+ * @param curState the current state of the instance.
+ * @param actualStatus the actual status of the instance.
+ * @param intendedStatus the intended status of the instance.
+ * @param  gpuName the name of the GPU used by the instance.
+ * @param numGpus the number of GPUs allocated to the instance.
+ * @param pricePerHourUSD the price per hour in USD.
+ * @param dlperfPerDphTotal the DLPerf per total DPH.
+ * @param dphBase the base DPH.
+ * @param dphTotal the total DPH.
+ * @param imageUuid the UUID of the image used by the instance.
+ * @param templateId the template ID associated with the instance.
+ * @param geoCountryCode the geolocation country code of the instance.
  */
 public record InstanceSummary(
         Long id,

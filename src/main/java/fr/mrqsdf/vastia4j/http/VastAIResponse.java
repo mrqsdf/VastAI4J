@@ -11,27 +11,29 @@ public class VastAIResponse<T> {
     private String error;
     private T result;
 
+    /**
+     * Indicates if the API request was successful.
+     * @return true if successful, false otherwise
+     */
     public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
 
+    /**
+     * Retrieves the error message if the request failed.
+     * @return the error message, or null if there was no error
+     */
     public String getError() {
         return error;
     }
 
-    public void setError(String error) {
-        this.error = error;
-    }
-
+    /**
+     * Retrieves the deserialized result data from the response.
+     * @return the result data of type T
+     */
     public T getResult() {
         return result;
     }
 
-    public void setResult(T result) {
-        this.result = result;
-    }
 }

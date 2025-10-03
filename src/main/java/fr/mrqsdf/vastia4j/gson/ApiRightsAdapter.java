@@ -10,6 +10,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Custom deserializer for {@link ApiRights}, which can contain both known categories and dynamic
+ * scope entries.
+ */
 public final class ApiRightsAdapter implements JsonDeserializer<ApiRights> {
     // Known categories documented under "Permissions and authorization"; everything else is treated
     // as a dynamic scope entry.

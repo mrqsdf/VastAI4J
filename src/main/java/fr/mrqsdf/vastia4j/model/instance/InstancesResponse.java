@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Wrapper for the {@code GET /instances/} endpoint.
+ * @param instances the list of instance summaries.
  */
 public record InstancesResponse(
         @SerializedName("instances") List<InstanceSummary> instances

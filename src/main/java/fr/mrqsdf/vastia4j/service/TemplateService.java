@@ -48,6 +48,12 @@ public final class TemplateService implements Service {
         return (resp == null || resp.templates() == null) ? List.of() : new ArrayList<>(resp.templates());
     }
 
+    /**
+     * Searches templates using the {@code GET /api/v0/template/} endpoint with optional
+     * {@code query} and {@code order_by} parameters.
+     * This is a convenience helper that does not support {@code select_filters}.
+     * @return the list of templates matching the search criteria, or an empty list if none found.
+     */
     public List<Template> searchAll(String qStr, String orderBy) {
         VastAIRequest.Builder b = client.requestBuilder()
                 .get()
@@ -67,6 +73,9 @@ public final class TemplateService implements Service {
 
     /**
      * Convenience helper to retrieve the authenticated user's templates.
+     * @param optionalQuery optional search query (can be null or blank)
+     * @param orderBy optional order-by clause (can be null or blank)
+     * @return the list of templates owned by the authenticated user, or an empty list if none found.
      */
     public List<Template> searchMyTemplates(String optionalQuery, String orderBy) {
         TemplateSearchQuery q = new TemplateSearchQuery().personalOnly();
@@ -75,6 +84,13 @@ public final class TemplateService implements Service {
         return search(q);
     }
 
+    /**
+     * Convenience helper to retrieve a specific user's templates by their user ID.
+     * @param myUserId the user ID whose templates to retrieve
+     * @param optionalQuery optional search query (can be null or blank)
+     * @param orderBy optional order-by clause (can be null or blank)
+     * @return the list of templates owned by the specified user, or an empty list if none found.
+     */
     public List<Template> searchMyTemplates(long myUserId, String optionalQuery, String orderBy) {
         TemplateSearchQuery q = new TemplateSearchQuery().addFilter("owner_id", myUserId);
         if (optionalQuery != null && !optionalQuery.isBlank()) q.query(optionalQuery);

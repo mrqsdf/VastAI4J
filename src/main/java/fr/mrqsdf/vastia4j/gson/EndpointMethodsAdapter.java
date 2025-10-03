@@ -9,7 +9,34 @@ import java.lang.reflect.Type;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Gson adapter to deserialize an {@link EndpointMethods} mapping from JSON.
+ * <p>
+ * The JSON structure is a mapping of HTTP methods (as strings) to objects (which may be empty).
+ * Example:
+ * <pre>
+ * {
+ *   "GET": {},
+ *   "POST": {
+ *     "required_params": ["name", "email"]
+ *   },
+ *   "DELETE": {}
+ * }
+ * </pre>
+ * This adapter will parse the above into an {@link EndpointMethods} instance mapping
+ * {@link HttpMethod#GET}, {@link HttpMethod#POST}, and {@link HttpMethod#DELETE}
+ * to their respective JSON objects.
+ */
 public final class EndpointMethodsAdapter implements JsonDeserializer<EndpointMethods> {
+
+    /**
+     * Deserialize a JSON element into an {@link EndpointMethods} instance.
+     * @param json the JSON data being deserialized
+     * @param typeOfT the type of the Object to deserialize to
+     * @param ctx context for deserialization
+     * @return the deserialized {@link EndpointMethods} instance
+     * @throws JsonParseException if the JSON is not in the expected format
+     */
     @Override
     public EndpointMethods deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext ctx) throws JsonParseException {
         EndpointMethods out = new EndpointMethods();

@@ -41,14 +41,30 @@ public class VastAIClient {
     private final String apiKey;
     private final URI baseUri;
 
+    /**
+     * Create a new Vast.ai API client with the given API key and default settings.
+     * @param apiKey the API key to use for authentication.
+     */
     public VastAIClient(String apiKey) {
         this(apiKey, DEFAULT_BASE_URL, defaultHttpClient(), defaultGson());
     }
 
+    /**
+     * Create a new Vast.ai API client with the given API key and base URL.
+     * @param apiKey the API key to use for authentication.
+     * @param baseUrl the base URL of the Vast.ai API (e.g. {@code https://console.vast.ai/api/v0}).
+     */
     public VastAIClient(String apiKey, String baseUrl) {
         this(apiKey, baseUrl, defaultHttpClient(), defaultGson());
     }
 
+    /**
+     * Create a new Vast.ai API client with the given settings.
+     * @param apiKey the API key to use for authentication.
+     * @param baseUrl the base URL of the Vast.ai API (e.g. {@code https://console.vast.ai/api/v0}).
+     * @param httpClient the HTTP client to use for requests.
+     * @param gson the Gson instance to use for JSON serialization/deserialization.
+     */
     public VastAIClient(String apiKey, String baseUrl, HttpClient httpClient, Gson gson) {
         this.apiKey = Objects.requireNonNull(apiKey, "apiKey");
         this.baseUri = normalizeBaseUri(Objects.requireNonNull(baseUrl, "baseUrl"));
@@ -57,6 +73,11 @@ public class VastAIClient {
         this.gson = Objects.requireNonNull(gson, "gson");
     }
 
+    /**
+     * Normalize the base URL by ensuring it ends with a slash and converting it to a URI.
+     * @param baseUrl the base URL to normalize.
+     * @return the normalized URI.
+     */
     private static URI normalizeBaseUri(String baseUrl) {
         String normalized = baseUrl.trim();
         if (!normalized.endsWith("/")) {
@@ -65,12 +86,20 @@ public class VastAIClient {
         return URI.create(normalized);
     }
 
+    /**
+     * Get the rights associated with the current API key.
+     * @return the API rights.
+     */
     public static HttpClient defaultHttpClient() {
         return HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(20))
                 .build();
     }
 
+    /**
+     * Create a default Gson instance with custom adapters for Vast.ai API models.
+     * @return the default Gson instance.
+     */
     public static Gson defaultGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(ApiRights.class, new ApiRightsAdapter())
@@ -79,18 +108,40 @@ public class VastAIClient {
                 .create();
     }
 
+    /**
+     * Get the Gson instance used by this client.
+     * @return the Gson instance.
+     */
     public Gson getGson() {
         return gson;
     }
 
+    /**
+     * Get the API key used by this client.
+     * @return the API key.
+     */
     public VastAIRequest.Builder requestBuilder() {
         return VastAIRequest.builder();
     }
 
+    /**
+     * Execute a Vast.ai API request and parse the response into the specified type.
+     * @param request the Vast.ai request to execute.
+     * @param responseType the class of the response type.
+     * @param <T> the type of the response.
+     * @return the parsed response.
+     */
     public <T> T execute(VastAIRequest request, Class<T> responseType) {
         return execute(request, (Type) responseType);
     }
 
+    /**
+     * Execute a Vast.ai API request and parse the response into the specified type.
+     * @param request the Vast.ai request to execute.
+     * @param responseType the type of the response (can be a generic type).
+     * @param <T> the type of the response.
+     * @return the parsed response.
+     */
     @SuppressWarnings("unchecked")
     public <T> T execute(VastAIRequest request, Type responseType) {
         HttpResponse<String> httpResponse = send(request);
@@ -105,11 +156,24 @@ public class VastAIClient {
         return gson.fromJson(body, responseType);
     }
 
+    /**
+     * Execute a Vast.ai API request and parse the response into a JsonElement.
+     * @param request the Vast.ai request to execute.
+     * @return the parsed response as a JsonElement.
+     */
     public JsonElement executeJson(VastAIRequest request) {
         HttpResponse<String> httpResponse = send(request);
         return gson.fromJson(httpResponse.body(), JsonElement.class);
     }
 
+    /**
+     * Execute a Vast.ai API request and parse the response into a VastAIResponse with the specified type token.
+     * This method checks the "success" field in the response and throws an exception if it's false.
+     * @param request the Vast.ai request to execute.
+     * @param typeToken the type token of the response type.
+     * @param <T> the type of the response data.
+     * @return the parsed VastAIResponse.
+     */
     public <T> VastAIResponse<T> executeWrapped(VastAIRequest request, TypeToken<VastAIResponse<T>> typeToken) {
         HttpResponse<String> httpResponse = send(request);
         VastAIResponse<T> response = gson.fromJson(httpResponse.body(), typeToken.getType());

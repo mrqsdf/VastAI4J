@@ -16,15 +16,27 @@ public class AccountService implements Service {
 
     private CurrentUser currentUser;
 
+    /**
+     * Creates a new AccountService instance.
+     * @param client the VastAIClient to use for requests
+     */
     public AccountService(VastAIClient client) {
         this.client = Objects.requireNonNull(client, "client");
     }
 
+    /**
+     * Retrieves the current account balance and credit information.
+     * @return an AccountBalance object containing balance and credit details
+     */
     public AccountBalance getBalance() {
         CurrentUser user = loadCurrentUser();
-        return new AccountBalance(user.getBalance(), user.getCredit());
+        return new AccountBalance(user.balance(), user.credit());
     }
 
+    /**
+     * Loads the current user information from the API.
+     * @return a CurrentUser object representing the authenticated user
+     */
     private CurrentUser loadCurrentUser() {
         VastAIRequest request = client.requestBuilder()
                 .get()
@@ -39,6 +51,10 @@ public class AccountService implements Service {
 
     }
 
+    /**
+     * Retrieves the current user information.
+     * @return a CurrentUser object representing the authenticated user
+     */
     public CurrentUser getClient() {
         return loadCurrentUser();
     }

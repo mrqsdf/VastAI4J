@@ -1,5 +1,8 @@
 package fr.mrqsdf.vastia4j.model.instance;
 
+/**
+ * Enumeration of possible run types for instances on Vast.ai.
+ */
 public enum RunType {
     SSH("ssh"),
     JUPYTER("jupyter"),
@@ -15,6 +18,10 @@ public enum RunType {
         this.json = json;
     }
 
+    /**
+     * Returns the JSON representation of the run type.
+     * @return the JSON string corresponding to the run type
+     */
     public String json() {
         return json;
     }

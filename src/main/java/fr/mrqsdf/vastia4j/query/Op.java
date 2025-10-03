@@ -12,7 +12,10 @@ public enum Op {
     Op(String jsonKey) {
         this.jsonKey = jsonKey;
     }
-
+    /**
+     * Get the JSON key corresponding to this operator.
+     * @return the JSON key as a string.
+     */
     public String jsonKey() {
         return jsonKey;
     }

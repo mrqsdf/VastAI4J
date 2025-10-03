@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Partial model for {@code GET /instances/{id}/}. Extend the payload to include additional fields
  * when required by your application.
+ * @param instances the detailed information about the instance.
  */
 public record InstanceDetails(
         @SerializedName("instances") InstancePayload instances

@@ -1,22 +1,53 @@
 plugins {
-    id 'java'
+    id 'java-library'      // librairie Java (expose API/implementation)
+    id 'maven-publish'     // (on ne publie pas, mais utile si tu veux plus tard)
 }
 
 group = 'fr.mrqsdf'
-version = '1.0-SNAPSHOT'
+version = findProperty('projVersion') ?: '1.0.0'   // surchargable: -PprojVersion=1.0.1
+
+java {
+    // JARs annexes “propres”
+    withSourcesJar()       // génère <name>-sources.jar
+    withJavadocJar()       // génère <name>-javadoc.jar
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    api 'com.google.code.gson:gson:2.13.2'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-
-    implementation 'com.google.code.gson:gson:2.13.2'
-
 }
 
 test {
     useJUnitPlatform()
+}
+
+// Donne un nom d’artefact stable : vastia4j-<version>.jar
+base {
+    archivesName = 'vastia4j'
+}
+
+// Un petit manifest utile dans le JAR principal
+jar {
+    manifest {
+        attributes(
+                'Implementation-Title': 'vastia4j',
+                'Implementation-Version': project.version,
+                'Automatic-Module-Name': 'fr.mrqsdf.vastia4j' // si tu utilises module-path
+        )
+    }
+}
+
+// (Optionnel) regroupe tout dans build/dist pour l’upload de release
+tasks.register('distZipAll', Zip) {
+    group = 'distribution'
+    from(layout.buildDirectory.dir('libs'))         // prend *.jar générés
+    archiveBaseName.set("${base.archivesName.get()}-dist")
+    archiveVersion.set("${project.version}")
+    destinationDirectory.set(layout.buildDirectory.dir('dist'))
 }

@@ -24,10 +24,21 @@ public enum OrderField {
         this.json = json;
     }
 
+    /**
+     * Returns the JSON representation of this order field, as used in API requests.
+     *
+     * @return the JSON key corresponding to this order field.
+     */
     public String json() {
         return json;
     }
 
+    /**
+     * Parses a JSON key and returns the corresponding OrderField enum value.
+     *
+     * @param key the JSON key to parse.
+     * @return the corresponding OrderField, or null if the key is unrecognized.
+     */
     public static OrderField fromJsonOrNull(String key) {
         for (OrderField f : values()) if (f.json.equals(key)) return f;
         return null;

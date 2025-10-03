@@ -22,32 +22,47 @@ public final class OfferQuery {
     private boolean disableBundling = false;
     private boolean noDefault = false;
 
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery type(String type) {
         this.type = Objects.requireNonNull(type);
         return this;
     }
 
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery limit(Integer limit) {
         this.limit = limit;
         return this;
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery allocatedStorageGiB(Double gib) {
         this.allocatedStorageGiB = gib;
         return this;
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery disableBundling(boolean v) {
         this.disableBundling = v;
         return this;
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery noDefault(boolean v) {
         this.noDefault = v;
         return this;
     }
 
     // ---------- WHERE: string-based variants (existing API surface) ----------
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(String field, Op op, JsonElement value) {
         Objects.requireNonNull(field);
         Objects.requireNonNull(op);
@@ -56,19 +71,27 @@ public final class OfferQuery {
         cond.add(op.jsonKey(), value);
         return this;
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(String field, Op op, String value) {
         return where(field, op, new com.google.gson.JsonPrimitive(value));
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(String field, Op op, Number value) {
         return where(field, op, new com.google.gson.JsonPrimitive(value));
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(String field, Op op, boolean value) {
         return where(field, op, new com.google.gson.JsonPrimitive(value));
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(String field, Op op, Collection<?> values) {
         JsonArray arr = new JsonArray();
         for (Object o : values) {
@@ -78,40 +101,61 @@ public final class OfferQuery {
         }
         return where(field, op, arr);
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     // ---------- WHERE: enum overloads ----------
     public OfferQuery where(OfferField field, Op op, JsonElement value) {
         return where(field.json(), op, value);
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(OfferField field, Op op, String value) {
         return where(field.json(), op, value);
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(OfferField field, Op op, Number value) {
         return where(field.json(), op, value);
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(OfferField field, Op op, boolean value) {
         return where(field.json(), op, value);
     }
-
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery where(OfferField field, Op op, Collection<?> values) {
         return where(field.json(), op, values);
     }
 
     // ---------- ORDER: string-based variant ----------
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery orderBy(String field, Direction dir) {
         order.add(new OrderBy(field, dir));
         return this;
     }
 
     // ---------- ORDER: enum overload ----------
+    /**
+     * @return this instance for chaining.
+     */
     public OfferQuery orderBy(OrderField field, Direction dir) {
         return orderBy(field.json(), dir);
     }
 
     // ---------- Build payload ----------
+    /**
+     * Builds the JSON object representing the query filters, order, type, limit, and other options.
+     *
+     * @return the JSON object representing the query.
+     */
     public JsonObject toQueryJson() {
         JsonObject q = new JsonObject();
         if (!noDefault) {
@@ -145,6 +189,12 @@ public final class OfferQuery {
         return q;
     }
 
+    /**
+     * Builds the full JSON payload for a {@code PUT /search/asks/} request,
+     * including the query, selected columns, and other options.
+     *
+     * @return the JSON object representing the full search payload.
+     */
     public com.google.gson.JsonObject toSearchAsksPayload() {
         com.google.gson.JsonObject root = new com.google.gson.JsonObject();
         com.google.gson.JsonArray select = new com.google.gson.JsonArray();

@@ -54,6 +54,9 @@ public enum OfferField {
         this.json = json;
     }
 
+    /**
+     * Returns the JSON key associated with this enum constant.
+     */
     public String json() {
         return json;
     }
