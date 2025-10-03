@@ -13,6 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Service that wraps the template discovery endpoints from the Vast.ai API reference.
+ * It supports the {@code GET /api/v0/template/} family of filters including {@code query},
+ * {@code order_by} and {@code select_filters} as described in the official documentation.
+ */
 public final class TemplateService implements Service {
 
     private final VastAIClient client;
@@ -22,20 +27,21 @@ public final class TemplateService implements Service {
     }
 
     /**
-     * GET /api/v0/template/?query=...&order_by=...&select_filters={...}
+     * Searches templates using the {@code GET /api/v0/template/} endpoint with optional
+     * {@code query}, {@code order_by} and {@code select_filters} parameters.
      */
     public List<Template> search(TemplateSearchQuery q) {
         var gson = client.getGson();
         var b = client.requestBuilder().get().path("/template/");
 
-        // query / order_by (simples)
+        // Simple pass-through parameters for query and ordering.
         if (q.query() != null && !q.query().isBlank())
             b.addQueryParam("query", q.query());
         if (q.orderBy() != null && !q.orderBy().isBlank())
             b.addQueryParam("order_by", q.orderBy());
 
-        // select_filters : JSON sérialisé, puis encodé par VastAIClient (une seule fois)
-        String sf = q.selectFiltersAsRawJson(gson);  // null si vide
+        // Select filters are pre-serialized once so the client can URL-encode the JSON payload.
+        String sf = q.selectFiltersAsRawJson(gson);
         if (sf != null) b.addQueryParam("select_filters", sf);
 
         var resp = client.execute(b.build(), TemplateSearchResponse.class);
@@ -45,7 +51,7 @@ public final class TemplateService implements Service {
     public List<Template> searchAll(String qStr, String orderBy) {
         VastAIRequest.Builder b = client.requestBuilder()
                 .get()
-                .path("/template/"); // base URL = https://console.vast.ai/api/v0
+                .path("/template/");
 
         if (qStr != null && !qStr.isBlank()) b.addQueryParam("query", qStr);
         if (orderBy != null && !orderBy.isBlank()) b.addQueryParam("order_by", orderBy);
@@ -60,7 +66,7 @@ public final class TemplateService implements Service {
     }
 
     /**
-     * Helpers “mes templates”
+     * Convenience helper to retrieve the authenticated user's templates.
      */
     public List<Template> searchMyTemplates(String optionalQuery, String orderBy) {
         TemplateSearchQuery q = new TemplateSearchQuery().personalOnly();

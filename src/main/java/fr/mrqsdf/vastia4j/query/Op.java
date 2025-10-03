@@ -1,7 +1,7 @@
 package fr.mrqsdf.vastia4j.query;
 
 /**
- * Opérateurs supportés par l’API Vast pour la recherche d’offres.
+ * Operators supported by the Vast.ai offer search API.
  */
 public enum Op {
     LT("lt"), LE("le"), EQ("eq"), NE("neq"), GE("ge"), GT("gt"),

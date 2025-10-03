@@ -3,7 +3,8 @@ package fr.mrqsdf.vastia4j.model.instance;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Modèle partiel pour GET /instances/{id}/ (ajoute d’autres champs au besoin).
+ * Partial model for {@code GET /instances/{id}/}. Extend the payload to include additional fields
+ * when required by your application.
  */
 public record InstanceDetails(
         @SerializedName("instances") InstancePayload instances

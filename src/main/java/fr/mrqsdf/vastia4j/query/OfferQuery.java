@@ -7,8 +7,9 @@ import com.google.gson.JsonObject;
 import java.util.*;
 
 /**
- * Builder pour requêtes de recherche Vast (POST /bundles/ ou PUT /search/asks/).
- * Conserve les méthodes String ET ajoute des surcharges avec enums.
+ * Fluent builder for Vast.ai offer searches (usable with both {@code POST /bundles/} and
+ * {@code PUT /search/asks/}).
+ * String-based helpers are preserved while enum-based overloads are provided for convenience.
  */
 public final class OfferQuery {
 
@@ -46,7 +47,7 @@ public final class OfferQuery {
         return this;
     }
 
-    // ---------- WHERE : versions String (déjà existantes) ----------
+    // ---------- WHERE: string-based variants (existing API surface) ----------
     public OfferQuery where(String field, Op op, JsonElement value) {
         Objects.requireNonNull(field);
         Objects.requireNonNull(op);
@@ -78,7 +79,7 @@ public final class OfferQuery {
         return where(field, op, arr);
     }
 
-    // ---------- WHERE : surcharges Enum ----------
+    // ---------- WHERE: enum overloads ----------
     public OfferQuery where(OfferField field, Op op, JsonElement value) {
         return where(field.json(), op, value);
     }
@@ -99,13 +100,13 @@ public final class OfferQuery {
         return where(field.json(), op, values);
     }
 
-    // ---------- ORDER : version String (déjà existante) ----------
+    // ---------- ORDER: string-based variant ----------
     public OfferQuery orderBy(String field, Direction dir) {
         order.add(new OrderBy(field, dir));
         return this;
     }
 
-    // ---------- ORDER : surcharge Enum ----------
+    // ---------- ORDER: enum overload ----------
     public OfferQuery orderBy(OrderField field, Direction dir) {
         return orderBy(field.json(), dir);
     }

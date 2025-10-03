@@ -3,7 +3,7 @@ package fr.mrqsdf.vastia4j.query;
 import java.util.Objects;
 
 /**
- * Élément de tri : champ + direction.
+ * Immutable pair representing an order-by clause (field + direction).
  */
 public record OrderBy(String field, Direction direction) {
     public OrderBy {

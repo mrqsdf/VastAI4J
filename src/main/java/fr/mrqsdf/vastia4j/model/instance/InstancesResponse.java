@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Wrapper de la route GET /instances/ (liste)
+ * Wrapper for the {@code GET /instances/} endpoint.
  */
 public record InstancesResponse(
         @SerializedName("instances") List<InstanceSummary> instances

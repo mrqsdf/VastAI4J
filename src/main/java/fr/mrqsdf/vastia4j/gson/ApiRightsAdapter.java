@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 public final class ApiRightsAdapter implements JsonDeserializer<ApiRights> {
-    // Liste des catégories connues, d’après la doc “Permissions-and-authorization”.
-    // (On reste tolérant : tout le reste est interprété comme un scope dynamique.)
+    // Known categories documented under "Permissions and authorization"; everything else is treated
+    // as a dynamic scope entry.
     private static final Set<String> KNOWN_CATEGORIES = Set.of(
             "misc",
             "user_read", "user_write",
@@ -25,7 +25,7 @@ public final class ApiRightsAdapter implements JsonDeserializer<ApiRights> {
     @Override
     public ApiRights deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext ctx) throws JsonParseException {
         ApiRights out = new ApiRights();
-        if (!json.isJsonObject()) throw new JsonParseException("ApiRights attend un objet JSON");
+        if (!json.isJsonObject()) throw new JsonParseException("ApiRights expects a JSON object");
         JsonObject obj = json.getAsJsonObject();
 
         for (Map.Entry<String, JsonElement> e : obj.entrySet()) {
@@ -33,20 +33,20 @@ public final class ApiRightsAdapter implements JsonDeserializer<ApiRights> {
             JsonElement val = e.getValue();
 
             if (KNOWN_CATEGORIES.contains(key)) {
-                // Catégorie : on stocke tel quel (objet JSON, vide ou avec contraintes)
+                // Category: store the JSON payload as-is (empty or with constraints).
                 if (val.isJsonObject()) {
                     out.getCategories().put(key, val.getAsJsonObject());
                 } else if (val.isJsonNull()) {
                     out.getCategories().put(key, new JsonObject());
                 } else {
-                    // tolérance : si ce n'est pas un objet, on l’encapsule
+                    // Be tolerant: if the payload is not an object, wrap it so it can be inspected.
                     JsonObject wrap = new JsonObject();
                     wrap.add("value", val);
                     out.getCategories().put(key, wrap);
                 }
             } else {
-                // Scope dynamique (ex: "*")
-                if (!val.isJsonObject()) continue; // ignore si non-objet
+                // Dynamic scope (e.g. "*")
+                if (!val.isJsonObject()) continue; // Ignore unexpected primitives.
                 JsonObject endpointsObj = val.getAsJsonObject();
                 Map<String, EndpointMethods> endpoints = new LinkedHashMap<>();
                 for (Map.Entry<String, JsonElement> ep : endpointsObj.entrySet()) {

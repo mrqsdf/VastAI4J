@@ -3,7 +3,7 @@ package fr.mrqsdf.vastia4j.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Modèle simplifié d’un template Vast. Ajoute/enlève les champs dont tu as besoin.
+ * Simplified Vast.ai template model. Extend or trim fields as needed for your use case.
  */
 public record Template(
         long id,

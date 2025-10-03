@@ -4,15 +4,15 @@ package fr.mrqsdf.vastia4j.model.instance;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Résumé d'une instance tel que retourné par GET /instances/
- * (Gson ignore les champs manquants, tu peux en ajouter/retirer facilement).
+ * Summary representation returned by {@code GET /instances/}.
+ * Gson tolerates missing fields, so feel free to adjust the projection when necessary.
  */
 public record InstanceSummary(
         Long id,
         @SerializedName("machine_id") Long machineId,
         String label,
-        @SerializedName("cur_state") String curState,           // "running" | "stopped" | ...
-        @SerializedName("actual_status") String actualStatus,   // ex. "running"
+        @SerializedName("cur_state") String curState,
+        @SerializedName("actual_status") String actualStatus,
         @SerializedName("intended_status") String intendedStatus,
         @SerializedName("gpu_name") String gpuName,
         @SerializedName("num_gpus") Integer numGpus,
@@ -21,7 +21,7 @@ public record InstanceSummary(
         @SerializedName("dph_base") Double dphBase,
         @SerializedName("dph_total") Double dphTotal,
         @SerializedName("image_uuid") String imageUuid,
-        @SerializedName("image") String image,                  // parfois présent selon endpoints
+        @SerializedName("image") String image,
         @SerializedName("template_id") Long templateId,
         @SerializedName("geolocation") String geoCountryCode
 ) {

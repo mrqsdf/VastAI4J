@@ -8,11 +8,13 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Builder pour l’endpoint GET /api/v0/template/
- * Paramètres supportés (cf. doc) :
- * - query: string libre pour matcher des champs de template
- * - order_by: nom de colonne pour le tri
- * - select_filters: objet (clé -> valeur) appliqué côté serveur
+ * Builder for {@code GET /api/v0/template/} queries.
+ * Supported parameters mirror the official documentation:
+ * <ul>
+ *     <li>{@code query}: free-form string matching template fields</li>
+ *     <li>{@code order_by}: column name used for ordering</li>
+ *     <li>{@code select_filters}: server-side filter object encoded as JSON</li>
+ * </ul>
  */
 public final class TemplateSearchQuery {
 
@@ -26,7 +28,7 @@ public final class TemplateSearchQuery {
     }
 
     /**
-     * Colonne de tri telle qu’acceptée par l’API (ex: "name", "created_at", etc.).
+     * Specifies the order column accepted by the API (e.g. {@code name}, {@code created_at}).
      */
     public TemplateSearchQuery orderBy(String column) {
         this.orderBy = column;
@@ -43,7 +45,7 @@ public final class TemplateSearchQuery {
     }
 
     /**
-     * Ajoute un filtre serveur générique. La clé/valeur est envoyée dans select_filters.
+     * Adds an arbitrary server-side filter that will be serialized within {@code select_filters}.
      */
     public TemplateSearchQuery addFilter(String key, Object value) {
         Objects.requireNonNull(key, "key");
@@ -52,26 +54,24 @@ public final class TemplateSearchQuery {
     }
 
     /**
-     * Helper: restreint aux templates « personnels ».
-     * NOTE: le nom exact de la clé dépend de l’API (voir doc GET /template/ et Postman).
-     * Si ta version n’accepte pas "mine", remplace par la clé supportée côté serveur
-     * (exemples courants: "owner_id", "owned_by_me", etc.).
+     * Helper that narrows the search to the caller's templates.
+     * Vast.ai deployments sometimes expose different keys (e.g. {@code mine}, {@code owner_id}),
+     * so adjust the filter name if your control plane expects an alternate field.
      */
     public TemplateSearchQuery personalOnly() {
-        // Choix par défaut: booléen "mine": true (simple et courant)
-        // Adapte la clé si besoin (voir notes plus bas).
+        // Use "mine" by default; adapt as needed depending on the backend configuration.
         return addFilter("mine", true);
     }
 
     /**
-     * Convertit en Map<String,String> pour générer la query-string.
+     * Converts the current state into query parameters suitable for the HTTP request.
      */
     public Map<String, String> toQueryParams(Gson gson) {
         Map<String, String> params = new LinkedHashMap<>();
         if (query != null && !query.isBlank()) params.put("query", query);
         if (orderBy != null && !orderBy.isBlank()) params.put("order_by", orderBy);
         if (!selectFilters.isEmpty()) {
-            // select_filters attend un objet JSON -> on sérialise proprement
+            // select_filters expects a JSON object → serialize deterministically.
             JsonObject sf = (JsonObject) gson.toJsonTree(selectFilters);
             params.put("select_filters", sf.toString());
         }
@@ -79,7 +79,7 @@ public final class TemplateSearchQuery {
     }
 
     public String selectFiltersAsRawJson(Gson gson) {
-        if (selectFilters.isEmpty()) return null;  // pas de param vide !
-        return gson.toJson(selectFilters);         // ex: {"owner_id":123}
+        if (selectFilters.isEmpty()) return null;
+        return gson.toJson(selectFilters);
     }
 }
