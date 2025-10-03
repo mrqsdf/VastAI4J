@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'fr.mrqsdf'
-version = findProperty('projVersion') ?: '1.0.1'   // surchargable: -PprojVersion=1.0.1
+version = findProperty('projVersion') ?: '1.0.2'   // surchargable: -PprojVersion=1.0.1
 
 java {
     // JARs annexes “propres”
