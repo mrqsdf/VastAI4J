@@ -188,7 +188,7 @@ public class VastAIClient {
         HttpRequest httpRequest = buildHttpRequest(request);
         try {
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            System.err.println("[VastAI] " + request.getMethod() + " " + buildHttpRequest(request).uri());
+            //System.err.println("[VastAI] " + request.getMethod() + " " + buildHttpRequest(request).uri());
             if (response.statusCode() >= 400) {
                 throw new VastAIException("HTTP " + response.statusCode() + " - " + response.body());
             }

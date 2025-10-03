@@ -98,7 +98,7 @@ public final class ShowPorts {
         //    la méthode la plus robuste pour 8000.
 
 
-        //vast.instances().destroy(instanceId);
+        vast.instances().destroy(instanceId);
         System.out.println("Destroyed instance " + instanceId);
 
     }

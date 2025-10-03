@@ -1,6 +1,7 @@
 package fr.mrqsdf.vastia4j;
 
 import fr.mrqsdf.vastia4j.client.VastAIClient;
+import fr.mrqsdf.vastia4j.event.EventBus;
 import fr.mrqsdf.vastia4j.service.AccountService;
 import fr.mrqsdf.vastia4j.service.OfferService;
 import fr.mrqsdf.vastia4j.service.InstanceService;
@@ -17,6 +18,8 @@ public class VastAI {
     private final OfferService offerService;
     private final TemplateService templateService;
     private final InstanceService instanceService;
+
+    private final EventBus eventBus;
 
     /**
      * Constructs a VastAI instance with the provided API key.
@@ -45,6 +48,7 @@ public class VastAI {
         this.offerService = new OfferService(client);
         this.templateService = new TemplateService(client);
         this.instanceService = new InstanceService(client);
+        this.eventBus = new EventBus();
     }
 
     /**
@@ -87,5 +91,13 @@ public class VastAI {
      */
     public InstanceService instances() {
         return instanceService;
+    }
+
+    /**
+     * Provides access to the event bus for subscribing to and publishing events.
+     * @return the EventBus instance
+     */
+    public EventBus eventBus() {
+        return eventBus;
     }
 }
