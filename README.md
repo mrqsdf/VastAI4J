@@ -6,7 +6,6 @@ Bibliothèque Java pour consommer l'API REST de [Vast.ai](https://vast.ai/) avec
 - [Aperçu](#aperçu)
 - [Fonctionnalités actuelles](#fonctionnalités-actuelles)
 - [Installation](#installation)
-  - [Construction du `.jar`](#construction-du-jar)
   - [Utilisation avec Gradle](#utilisation-avec-gradle)
   - [Utilisation avec Maven](#utilisation-avec-maven)
 - [Guide d'utilisation](#guide-dutilisation)
@@ -30,12 +29,6 @@ VastIA4J fournit un client HTTP central (`VastAIClient`) encapsulé dans une fa�
 - Service templates (déprécié côté API) conservé pour compatibilité avec les filtres `TemplateSearchQuery`.
 
 ## Installation
-### Construction du `.jar`
-```bash
-./gradlew clean build
-```
-Le fichier `build/libs/vastia4j-<version>.jar` généré peut être distribué tel quel.
-
 ### Utilisation avec Gradle
 1. Copiez le `.jar` dans un répertoire `libs/` de votre projet.
 2. Ajoutez un dépôt `flatDir` et référencez le fichier :
@@ -101,10 +94,13 @@ Le constructeur accepte aussi un `VastAIClient` préconfiguré (proxy, timeouts 
 
 ### Gestion du compte
 ```java
-var balance = vast.account().getBalance();
+import fr.mrqsdf.vastia4j.model.AccountBalance;
+import fr.mrqsdf.vastia4j.model.CurrentUser;
+
+AccountBalance balance = vast.account().getBalance();
 System.out.println("Crédit disponible : " + balance.credit());
 
-var currentUser = vast.account().getClient();
+CurrentUser currentUser = vast.account().getClient();
 System.out.println("Utilisateur : " + currentUser.username());
 ```
 Le service récupère automatiquement `GET /users/current/` et met à disposition le solde et les crédits.
