@@ -8,7 +8,7 @@ import java.util.*;
 
 /**
  * Modèle robuste pour GET /api/v0/instances/{id}/
- * - Les champs polymorphes (image_args, extra_env, local_ipaddrs) sont JsonElement / List<JsonElement>.
+ * - Les champs polymorphes (image_args, extra_env, local_ipaddrs) sont JsonElement / List
  * - Ajoute plusieurs champs usuels visibles dans la réponse (GPU/CPU/Disk/Costs…).
  * - Gson tolère l'absence/présence de champs supplémentaires (ils restent null).
  */
@@ -29,7 +29,6 @@ public record InstanceDetails(
             @SerializedName("ssh_host") String sshHost,
             @SerializedName("ssh_port") Integer sshPort,
             @SerializedName("public_ipaddr") String publicIpaddr,
-            // ⚠️ polymorphe: String "ip ip ..." OU Array<String>
             @SerializedName("local_ipaddrs") JsonElement localIpaddrs,
             @SerializedName("machine_dir_ssh_port") Integer machineDirSshPort,
             @SerializedName("ports") Map<String, List<Ports>> ports,
@@ -112,7 +111,7 @@ public record InstanceDetails(
 
     // ---------- HELPERS DE NORMALISATION ----------
 
-    /** image_args -> List<String> (accepte String ou Array<String>) */
+    /** image_args -> List (accepte String ou Array) */
     public static java.util.List<String> imageArgsAsList(JsonElement imageArgs) {
         if (imageArgs == null || imageArgs.isJsonNull()) return java.util.List.of();
         if (imageArgs.isJsonPrimitive()) {
@@ -131,7 +130,6 @@ public record InstanceDetails(
         return java.util.List.of(imageArgs.toString());
     }
 
-    /** extra_env -> Map<K,V> (accepte ["K=V", ...] OU [["K","V"], ...]) */
     public static java.util.Map<String,String> extraEnvAsMap(java.util.List<JsonElement> raw) {
         java.util.Map<String,String> out = new java.util.LinkedHashMap<>();
         if (raw == null) return out;
@@ -157,7 +155,6 @@ public record InstanceDetails(
         return out;
     }
 
-    /** local_ipaddrs -> List<String> (accepte String "ip ip ..." OU Array<String>) */
     public static java.util.List<String> localIpaddrsAsList(JsonElement localIpaddrs) {
         if (localIpaddrs == null || localIpaddrs.isJsonNull()) return java.util.List.of();
         if (localIpaddrs.isJsonPrimitive()) {

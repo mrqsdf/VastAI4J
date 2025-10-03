@@ -11,8 +11,6 @@ import java.util.*;
 /**
  * Affiche l'IP publique, les infos SSH et les ports ouverts d'une instance Vast.ai,
  * et imprime des conseils pour se connecter à SSH (22) et à un service interne (ex: 8000).
- *
- * Usage: java ShowPorts <API_KEY> <INSTANCE_ID>
  */
 public final class ShowPorts {
 
