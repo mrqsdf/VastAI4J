@@ -21,7 +21,9 @@ public final class TemplateService implements Service {
         this.client = Objects.requireNonNull(client, "client");
     }
 
-    /** GET /api/v0/template/?query=...&order_by=...&select_filters={...} */
+    /**
+     * GET /api/v0/template/?query=...&order_by=...&select_filters={...}
+     */
     public List<Template> search(TemplateSearchQuery q) {
         var gson = client.getGson();
         var b = client.requestBuilder().get().path("/template/");
@@ -57,7 +59,9 @@ public final class TemplateService implements Service {
         return URLEncoder.encode(s, StandardCharsets.UTF_8);
     }
 
-    /** Helpers “mes templates” */
+    /**
+     * Helpers “mes templates”
+     */
     public List<Template> searchMyTemplates(String optionalQuery, String orderBy) {
         TemplateSearchQuery q = new TemplateSearchQuery().personalOnly();
         if (optionalQuery != null && !optionalQuery.isBlank()) q.query(optionalQuery);
@@ -72,5 +76,6 @@ public final class TemplateService implements Service {
         return search(q);
     }
 
-    @Override public void update() { /* no-op */ }
+    @Override
+    public void update() { /* no-op */ }
 }

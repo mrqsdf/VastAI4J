@@ -48,4 +48,5 @@ public record Offer(
         @SerializedName("pci_gen") Double pciGen,
         @SerializedName("pcie_bw") Double pcieBwGBs,
         @SerializedName("bw_nvlink") Double bwNvlinkGBs
-) {}
+) {
+}

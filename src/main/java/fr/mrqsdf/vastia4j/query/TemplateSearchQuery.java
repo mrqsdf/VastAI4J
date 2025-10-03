@@ -10,9 +10,9 @@ import java.util.Objects;
 /**
  * Builder pour l’endpoint GET /api/v0/template/
  * Paramètres supportés (cf. doc) :
- *   - query: string libre pour matcher des champs de template
- *   - order_by: nom de colonne pour le tri
- *   - select_filters: objet (clé -> valeur) appliqué côté serveur
+ * - query: string libre pour matcher des champs de template
+ * - order_by: nom de colonne pour le tri
+ * - select_filters: objet (clé -> valeur) appliqué côté serveur
  */
 public final class TemplateSearchQuery {
 
@@ -20,16 +20,31 @@ public final class TemplateSearchQuery {
     private String orderBy;
     private final Map<String, Object> selectFilters = new LinkedHashMap<>();
 
-    public TemplateSearchQuery query(String q) { this.query = q; return this; }
+    public TemplateSearchQuery query(String q) {
+        this.query = q;
+        return this;
+    }
 
-    /** Colonne de tri telle qu’acceptée par l’API (ex: "name", "created_at", etc.). */
-    public TemplateSearchQuery orderBy(String column) { this.orderBy = column; return this; }
+    /**
+     * Colonne de tri telle qu’acceptée par l’API (ex: "name", "created_at", etc.).
+     */
+    public TemplateSearchQuery orderBy(String column) {
+        this.orderBy = column;
+        return this;
+    }
 
 
-    public String query()   { return this.query; }
-    public String orderBy() { return this.orderBy; }
+    public String query() {
+        return this.query;
+    }
 
-    /** Ajoute un filtre serveur générique. La clé/valeur est envoyée dans select_filters. */
+    public String orderBy() {
+        return this.orderBy;
+    }
+
+    /**
+     * Ajoute un filtre serveur générique. La clé/valeur est envoyée dans select_filters.
+     */
     public TemplateSearchQuery addFilter(String key, Object value) {
         Objects.requireNonNull(key, "key");
         selectFilters.put(key, value);
@@ -48,7 +63,9 @@ public final class TemplateSearchQuery {
         return addFilter("mine", true);
     }
 
-    /** Convertit en Map<String,String> pour générer la query-string. */
+    /**
+     * Convertit en Map<String,String> pour générer la query-string.
+     */
     public Map<String, String> toQueryParams(Gson gson) {
         Map<String, String> params = new LinkedHashMap<>();
         if (query != null && !query.isBlank()) params.put("query", query);

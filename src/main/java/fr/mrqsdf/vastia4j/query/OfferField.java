@@ -49,10 +49,18 @@ public enum OfferField {
     VERIFIED("verified");
 
     private final String json;
-    OfferField(String json) { this.json = json; }
-    public String json() { return json; }
 
-    /** Permet de retomber sur un enum si besoin (ne lève pas si inconnu). */
+    OfferField(String json) {
+        this.json = json;
+    }
+
+    public String json() {
+        return json;
+    }
+
+    /**
+     * Permet de retomber sur un enum si besoin (ne lève pas si inconnu).
+     */
     public static OfferField fromJsonOrNull(String key) {
         for (OfferField f : values()) if (f.json.equals(key)) return f;
         return null;

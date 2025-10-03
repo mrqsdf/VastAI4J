@@ -10,6 +10,12 @@ public enum RunType {
     JUPYTER_DIRECT("jupyter_direct");
 
     private final String json;
-    RunType(String json){ this.json = json; }
-    public String json(){ return json; }
+
+    RunType(String json) {
+        this.json = json;
+    }
+
+    public String json() {
+        return json;
+    }
 }

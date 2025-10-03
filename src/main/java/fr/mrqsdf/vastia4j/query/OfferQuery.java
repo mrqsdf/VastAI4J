@@ -21,22 +21,53 @@ public final class OfferQuery {
     private boolean disableBundling = false;
     private boolean noDefault = false;
 
-    public OfferQuery type(String type) { this.type = Objects.requireNonNull(type); return this; }
-    public OfferQuery limit(Integer limit) { this.limit = limit; return this; }
-    public OfferQuery allocatedStorageGiB(Double gib) { this.allocatedStorageGiB = gib; return this; }
-    public OfferQuery disableBundling(boolean v) { this.disableBundling = v; return this; }
-    public OfferQuery noDefault(boolean v) { this.noDefault = v; return this; }
+    public OfferQuery type(String type) {
+        this.type = Objects.requireNonNull(type);
+        return this;
+    }
+
+    public OfferQuery limit(Integer limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public OfferQuery allocatedStorageGiB(Double gib) {
+        this.allocatedStorageGiB = gib;
+        return this;
+    }
+
+    public OfferQuery disableBundling(boolean v) {
+        this.disableBundling = v;
+        return this;
+    }
+
+    public OfferQuery noDefault(boolean v) {
+        this.noDefault = v;
+        return this;
+    }
 
     // ---------- WHERE : versions String (déjà existantes) ----------
     public OfferQuery where(String field, Op op, JsonElement value) {
-        Objects.requireNonNull(field); Objects.requireNonNull(op); Objects.requireNonNull(value);
+        Objects.requireNonNull(field);
+        Objects.requireNonNull(op);
+        Objects.requireNonNull(value);
         JsonObject cond = filters.computeIfAbsent(field, k -> new JsonObject());
         cond.add(op.jsonKey(), value);
         return this;
     }
-    public OfferQuery where(String field, Op op, String value) { return where(field, op, new com.google.gson.JsonPrimitive(value)); }
-    public OfferQuery where(String field, Op op, Number value) { return where(field, op, new com.google.gson.JsonPrimitive(value)); }
-    public OfferQuery where(String field, Op op, boolean value) { return where(field, op, new com.google.gson.JsonPrimitive(value)); }
+
+    public OfferQuery where(String field, Op op, String value) {
+        return where(field, op, new com.google.gson.JsonPrimitive(value));
+    }
+
+    public OfferQuery where(String field, Op op, Number value) {
+        return where(field, op, new com.google.gson.JsonPrimitive(value));
+    }
+
+    public OfferQuery where(String field, Op op, boolean value) {
+        return where(field, op, new com.google.gson.JsonPrimitive(value));
+    }
+
     public OfferQuery where(String field, Op op, Collection<?> values) {
         JsonArray arr = new JsonArray();
         for (Object o : values) {
@@ -51,15 +82,19 @@ public final class OfferQuery {
     public OfferQuery where(OfferField field, Op op, JsonElement value) {
         return where(field.json(), op, value);
     }
+
     public OfferQuery where(OfferField field, Op op, String value) {
         return where(field.json(), op, value);
     }
+
     public OfferQuery where(OfferField field, Op op, Number value) {
         return where(field.json(), op, value);
     }
+
     public OfferQuery where(OfferField field, Op op, boolean value) {
         return where(field.json(), op, value);
     }
+
     public OfferQuery where(OfferField field, Op op, Collection<?> values) {
         return where(field.json(), op, values);
     }
@@ -82,7 +117,7 @@ public final class OfferQuery {
             q.add("verified", one("eq", true));
             q.add("external", one("eq", false));
             q.add("rentable", one("eq", true));
-            q.add("rented",   one("eq", false));
+            q.add("rented", one("eq", false));
         }
         for (Map.Entry<String, JsonObject> e : filters.entrySet()) {
             JsonObject dest = q.has(e.getKey()) && q.get(e.getKey()).isJsonObject()
@@ -111,7 +146,8 @@ public final class OfferQuery {
 
     public com.google.gson.JsonObject toSearchAsksPayload() {
         com.google.gson.JsonObject root = new com.google.gson.JsonObject();
-        com.google.gson.JsonArray select = new com.google.gson.JsonArray(); select.add("*");
+        com.google.gson.JsonArray select = new com.google.gson.JsonArray();
+        select.add("*");
         root.add("select_cols", select);
         root.add("q", toQueryJson());
         return root;

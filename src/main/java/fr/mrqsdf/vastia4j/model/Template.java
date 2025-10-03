@@ -2,7 +2,9 @@ package fr.mrqsdf.vastia4j.model;
 
 import com.google.gson.annotations.SerializedName;
 
-/** Modèle simplifié d’un template Vast. Ajoute/enlève les champs dont tu as besoin. */
+/**
+ * Modèle simplifié d’un template Vast. Ajoute/enlève les champs dont tu as besoin.
+ */
 public record Template(
         long id,
         String name,
@@ -14,4 +16,5 @@ public record Template(
         @SerializedName("public") Boolean isPublic,
         @SerializedName("recommended") Boolean isRecommended,
         @SerializedName("created_at") Long createdAtEpochSec
-) {}
+) {
+}

@@ -19,8 +19,13 @@ public final class Right {
     @SerializedName("sid")
     private long sid;
 
-    public Rights getRights() { return rights; }
-    public long getSid() { return sid; }
+    public Rights getRights() {
+        return rights;
+    }
+
+    public long getSid() {
+        return sid;
+    }
 
     // ---------- Modèle imbriqué ----------
 
@@ -32,7 +37,9 @@ public final class Right {
         @SerializedName("api")
         private ApiRights api;
 
-        public ApiRights getApi() { return api; }
+        public ApiRights getApi() {
+            return api;
+        }
     }
 
 }

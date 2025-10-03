@@ -18,12 +18,17 @@ public final class ApiRights {
     /**
      * Scopes dynamiques (souvent "*") → endpoints → méthodes autorisées.
      * Exemple :
-     *   scopes.get("*").get("api.team").allows(HttpMethod.POST) == true
+     * scopes.get("*").get("api.team").allows(HttpMethod.POST) == true
      */
     private final Map<String, Map<String, EndpointMethods>> scopes = new LinkedHashMap<>();
 
-    public Map<String, JsonObject> getCategories() { return categories; }
-    public Map<String, Map<String, EndpointMethods>> getScopes() { return scopes; }
+    public Map<String, JsonObject> getCategories() {
+        return categories;
+    }
+
+    public Map<String, Map<String, EndpointMethods>> getScopes() {
+        return scopes;
+    }
 
     /**
      * Helper pratique : savoir si une méthode est autorisée pour un endpoint dans un scope.

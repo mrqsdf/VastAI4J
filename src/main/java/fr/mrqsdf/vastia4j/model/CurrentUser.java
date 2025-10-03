@@ -5,51 +5,96 @@ import fr.mrqsdf.vastia4j.auth.Right;
 
 public final class CurrentUser {
 
-    @SerializedName("can_pay") private Boolean canPay;
-    @SerializedName("id") private Long id;
-    @SerializedName("created_at") private Long createdAt;
-    @SerializedName("api_key") private String apiKey;
-    @SerializedName("key_id") private Integer keyId;
-    @SerializedName("username") private String username;
-    @SerializedName("ssh_key") private String sshKey;
-    @SerializedName("phone_number") private String phoneNumber;
-    @SerializedName("paypal_email") private String paypalEmail;
-    @SerializedName("wise_email") private String wiseEmail;
-    @SerializedName("fullname") private String fullname;
-    @SerializedName("balance_threshold") private Double balanceThreshold;
-    @SerializedName("balance_threshold_enabled") private Boolean balanceThresholdEnabled;
-    @SerializedName("autobill_threshold") private Double autobillThreshold;
-    @SerializedName("total_spend" ) private Double totalSpend;
-    @SerializedName("autobill_amount") private Double autobillAmount;
-    @SerializedName("billaddress_line1") private String billaddressLine1;
-    @SerializedName("billaddress_line2") private String billaddressLine2;
-    @SerializedName("billaddress_city") private String billaddressCity;
-    @SerializedName("billaddress_zip") private String billaddressZip;
-    @SerializedName("billaddress_country") private String billaddressCountry;
-    @SerializedName("billing_creditonly") private Integer billingCreditonly;
-    @SerializedName("billaddress_taxinfo") private String billaddressTaxinfo;
-    @SerializedName("password_resettable") private Boolean passwordResettable;
-    @SerializedName("email") private String email;
-    @SerializedName("has_billing") private Boolean hasBilling;
-    @SerializedName("has_payout") private Boolean hasPayout;
-    @SerializedName("payout_enabled") private Boolean payoutEnabled;
-    @SerializedName("host_only") private Boolean hostOnly;
-    @SerializedName("host_agreement_accepted") private Boolean hostAgreementAccepted;
-    @SerializedName("email_verified") private Boolean emailVerified;
-    @SerializedName("last4") private String last4;
-    @SerializedName("balance") private Double balance;
-    @SerializedName("credit") private Double credit;
-    @SerializedName("got_signup_credit") private Integer gotSignupCredit;
-    @SerializedName("user") private String user;
-    @SerializedName("paid_verified") private Double paidVerified;
-    @SerializedName("paid_expected") private Double paidExpected;
-    @SerializedName("billed_verified") private Double billedVerified;
-    @SerializedName("billed_expected") private Double billedExpected;
-    @SerializedName("has_rented") private Boolean hasRented;
-    @SerializedName("balance_referrals") private Double balanceReferrals;
-    @SerializedName("discord_id") private String discordId;
-    @SerializedName("oauth_provider") private String oauthProvider;
-    @SerializedName("rights") private Right rights;
+    @SerializedName("can_pay")
+    private Boolean canPay;
+    @SerializedName("id")
+    private Long id;
+    @SerializedName("created_at")
+    private Long createdAt;
+    @SerializedName("api_key")
+    private String apiKey;
+    @SerializedName("key_id")
+    private Integer keyId;
+    @SerializedName("username")
+    private String username;
+    @SerializedName("ssh_key")
+    private String sshKey;
+    @SerializedName("phone_number")
+    private String phoneNumber;
+    @SerializedName("paypal_email")
+    private String paypalEmail;
+    @SerializedName("wise_email")
+    private String wiseEmail;
+    @SerializedName("fullname")
+    private String fullname;
+    @SerializedName("balance_threshold")
+    private Double balanceThreshold;
+    @SerializedName("balance_threshold_enabled")
+    private Boolean balanceThresholdEnabled;
+    @SerializedName("autobill_threshold")
+    private Double autobillThreshold;
+    @SerializedName("total_spend")
+    private Double totalSpend;
+    @SerializedName("autobill_amount")
+    private Double autobillAmount;
+    @SerializedName("billaddress_line1")
+    private String billaddressLine1;
+    @SerializedName("billaddress_line2")
+    private String billaddressLine2;
+    @SerializedName("billaddress_city")
+    private String billaddressCity;
+    @SerializedName("billaddress_zip")
+    private String billaddressZip;
+    @SerializedName("billaddress_country")
+    private String billaddressCountry;
+    @SerializedName("billing_creditonly")
+    private Integer billingCreditonly;
+    @SerializedName("billaddress_taxinfo")
+    private String billaddressTaxinfo;
+    @SerializedName("password_resettable")
+    private Boolean passwordResettable;
+    @SerializedName("email")
+    private String email;
+    @SerializedName("has_billing")
+    private Boolean hasBilling;
+    @SerializedName("has_payout")
+    private Boolean hasPayout;
+    @SerializedName("payout_enabled")
+    private Boolean payoutEnabled;
+    @SerializedName("host_only")
+    private Boolean hostOnly;
+    @SerializedName("host_agreement_accepted")
+    private Boolean hostAgreementAccepted;
+    @SerializedName("email_verified")
+    private Boolean emailVerified;
+    @SerializedName("last4")
+    private String last4;
+    @SerializedName("balance")
+    private Double balance;
+    @SerializedName("credit")
+    private Double credit;
+    @SerializedName("got_signup_credit")
+    private Integer gotSignupCredit;
+    @SerializedName("user")
+    private String user;
+    @SerializedName("paid_verified")
+    private Double paidVerified;
+    @SerializedName("paid_expected")
+    private Double paidExpected;
+    @SerializedName("billed_verified")
+    private Double billedVerified;
+    @SerializedName("billed_expected")
+    private Double billedExpected;
+    @SerializedName("has_rented")
+    private Boolean hasRented;
+    @SerializedName("balance_referrals")
+    private Double balanceReferrals;
+    @SerializedName("discord_id")
+    private String discordId;
+    @SerializedName("oauth_provider")
+    private String oauthProvider;
+    @SerializedName("rights")
+    private Right rights;
 
     public Boolean getCanPay() {
         return canPay;

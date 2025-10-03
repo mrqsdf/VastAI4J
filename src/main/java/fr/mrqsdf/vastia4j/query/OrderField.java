@@ -19,8 +19,14 @@ public enum OrderField {
     INET_UP("inet_up");
 
     private final String json;
-    OrderField(String json) { this.json = json; }
-    public String json() { return json; }
+
+    OrderField(String json) {
+        this.json = json;
+    }
+
+    public String json() {
+        return json;
+    }
 
     public static OrderField fromJsonOrNull(String key) {
         for (OrderField f : values()) if (f.json.equals(key)) return f;

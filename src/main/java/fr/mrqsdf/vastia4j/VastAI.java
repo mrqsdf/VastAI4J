@@ -14,8 +14,13 @@ public class VastAI {
     private final TemplateService templateService;
     private final InstanceService instanceService;
 
-    public VastAI(String apiKey) { this(new VastAIClient(apiKey)); }
-    public VastAI(String apiKey, String baseUrl) { this(new VastAIClient(apiKey, baseUrl)); }
+    public VastAI(String apiKey) {
+        this(new VastAIClient(apiKey));
+    }
+
+    public VastAI(String apiKey, String baseUrl) {
+        this(new VastAIClient(apiKey, baseUrl));
+    }
 
     public VastAI(VastAIClient client) {
         this.client = client;
@@ -25,9 +30,24 @@ public class VastAI {
         this.instanceService = new InstanceService(client);
     }
 
-    public VastAIClient getClient() { return client; }
-    public AccountService account() { return accountService; }
-    public OfferService offers() { return offerService; }
-    public TemplateService templates() { return templateService; }
-    public InstanceService instances() { return instanceService; }
+    public VastAIClient getClient() {
+        return client;
+    }
+
+    public AccountService account() {
+        return accountService;
+    }
+
+    public OfferService offers() {
+        return offerService;
+    }
+
+    
+    public TemplateService templates() {
+        return templateService;
+    }
+
+    public InstanceService instances() {
+        return instanceService;
+    }
 }

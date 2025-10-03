@@ -3,17 +3,17 @@ package fr.mrqsdf.vastia4j;
 import fr.mrqsdf.vastia4j.model.AccountBalance;
 import fr.mrqsdf.vastia4j.model.Offer;
 import fr.mrqsdf.vastia4j.model.Template;
-import fr.mrqsdf.vastia4j.model.instance.CreateInstanceRequest;
-import fr.mrqsdf.vastia4j.model.instance.CreateInstanceResponse;
-import fr.mrqsdf.vastia4j.model.instance.InstanceDetails;
-import fr.mrqsdf.vastia4j.model.instance.RunType;
+import fr.mrqsdf.vastia4j.model.instance.*;
 import fr.mrqsdf.vastia4j.query.*;
 
 import java.util.*;
 
-/** Small demonstration of the Vast.ai Java client. */
+/**
+ * Small demonstration of the Vast.ai Java client.
+ */
 public final class Main {
-    private Main() {}
+    private Main() {
+    }
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -107,11 +107,31 @@ public final class Main {
         //vastAI.instances().reboot(instanceId);
         System.out.println("Rebooted instance " + instanceId);
 
-        // 6) Détruire
-        //vastAI.instances().destroy(instanceId);
-        System.out.println("Destroyed instance " + instanceId);
 
+        // 1) Lister toutes les instances
+        List<InstanceSummary> all = vastAI.instances().list();
+        System.out.println("=== Instances ===");
+        if (all.isEmpty()) {
+            System.out.println("(aucune instance)");
+        } else {
+            for (InstanceSummary s : all) {
+                System.out.printf("#%d | %s | %s | GPU=%s x%d | $/h=%.4f%n",
+                        s.id(),
+                        s.curState(),
+                        s.label(),
+                        s.gpuName(),
+                        s.numGpus() == null ? 0 : s.numGpus(),
+                        s.dphTotal() == null ? Double.NaN : s.dphTotal()
+                );
+            }
+
+        }
+        // 6) Détruire
+        vastAI.instances().destroy(instanceId);
+        System.out.println("Destroyed instance " + instanceId);
     }
 
-    private static double nz(Double d) { return d == null ? Double.NaN : d; }
+    private static double nz(Double d) {
+        return d == null ? Double.NaN : d;
+    }
 }
