@@ -42,7 +42,7 @@ public class VastAI {
         return offerService;
     }
 
-    
+    @Deprecated(since = "Vast Backend not Working")
     public TemplateService templates() {
         return templateService;
     }
