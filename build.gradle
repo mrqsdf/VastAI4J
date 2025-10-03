@@ -29,16 +29,16 @@ test {
 
 // Donne un nom d’artefact stable : vastia4j-<version>.jar
 base {
-    archivesName = 'vastia4j'
+    archivesName = 'vastai4j'
 }
 
 // Un petit manifest utile dans le JAR principal
 jar {
     manifest {
         attributes(
-                'Implementation-Title': 'vastia4j',
+                'Implementation-Title': 'vastai4j',
                 'Implementation-Version': project.version,
-                'Automatic-Module-Name': 'fr.mrqsdf.vastia4j' // si tu utilises module-path
+                'Automatic-Module-Name': 'fr.mrqsdf.vastai4j' // si tu utilises module-path
         )
     }
 }
