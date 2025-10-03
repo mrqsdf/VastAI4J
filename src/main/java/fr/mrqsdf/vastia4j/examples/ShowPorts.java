@@ -23,7 +23,7 @@ public final class ShowPorts {
         VastAI vast = new VastAI(apiKey);
         InstanceService svc = vast.instances();
 
-        /*OfferQuery q = new OfferQuery()
+        OfferQuery q = new OfferQuery()
                 .where(OfferField.GPU_NAME, Op.IN, Set.of("RTX 3060"))
                 .where(OfferField.STATIC_IP, Op.EQ, false)
                 .orderBy(OrderField.SCORE, Direction.DESC)
@@ -33,7 +33,6 @@ public final class ShowPorts {
         offers.sort(Comparator.comparing(Offer::dphTotal));
 
         long offerId = offers.get(0).id();
-        long templateId = -1; // Replace with a template id if you want to rely on an existing template.
 
         CreateInstanceRequest req = new CreateInstanceRequest()
                 .templateId(null)  // Set to null when providing a custom image instead.
@@ -48,8 +47,7 @@ public final class ShowPorts {
         System.out.println("Create success=" + created.success() + " new_contract=" + created.newContract());
 
         // Instance identifiers usually match the "new_contract" value.
-        long instanceId = created.newContract();*/
-        long instanceId = 26418410;
+        long instanceId = created.newContract();
 
 
         InstanceDetails det = svc.show(instanceId);
