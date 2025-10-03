@@ -33,7 +33,7 @@ VastIA4J provides a central HTTP client (`VastAIClient`) wrapped in a high-level
 * Account service to retrieve the current user and balance (`AccountService`).
 * Offer service to query GPU offers through the legacy (`POST /bundles/`) and modern (`PUT /search/asks/`) endpoints using the `OfferQuery` builder.
 * Instance service to create, start, stop, restart, label, destroy, or list instances, as well as fetch extended details (`InstanceService`).
-* **Event bus & monitor (Spigot-style)**: listen to instance state changes, SSH availability, and port-mapping availability.
+* **Event bus & monitor **: listen to instance state changes, SSH availability, and port-mapping availability.
 * Template service (deprecated on the API side) kept for compatibility with `TemplateSearchQuery` filters.
 
 ## Installation
@@ -153,7 +153,7 @@ var details = vast.instances().show(created.newContract());
 System.out.println("SSH: " + details.instances().sshHost() + ":" + details.instances().sshPort());
 ```
 
-### Event System (Spigot-style)
+### Event System 
 
 VastIA4J ships an **EventBus** and an **InstanceMonitor** that polls the Vast API and fires events when an instance:
 
