@@ -16,7 +16,7 @@ Java library to consume the [Vast.ai](https://vast.ai/) REST API with an idiomat
   * [Account Management](#account-management)
   * [GPU Offer Search](#gpu-offer-search)
   * [Instance Management](#instance-management)
-  * [Event System](#event-system-spigot-style)
+  * [Event System](#event-system)
   * [Accessing Templates](#accessing-templates)
   * [Exposed Data Models](#exposed-data-models)
 * [Changelog](#changelog)
@@ -153,7 +153,7 @@ var details = vast.instances().show(created.newContract());
 System.out.println("SSH: " + details.instances().sshHost() + ":" + details.instances().sshPort());
 ```
 
-### Event System 
+### Event System
 
 VastIA4J ships an **EventBus** and an **InstanceMonitor** that polls the Vast API and fires events when an instance:
 
