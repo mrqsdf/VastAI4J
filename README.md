@@ -98,7 +98,7 @@ Then declare the dependency:
 ### Client Initialization
 
 ```java
-import fr.mrqsdf.vastia4j.VastAI;
+import fr.mrqsdf.vastai4j.VastAI;
 
 VastAI vast = new VastAI("YOUR_API_KEY");
 // or
@@ -108,20 +108,24 @@ VastAI vastCustom = new VastAI("YOUR_API_KEY", "https://console.vast.ai/api/v0")
 ### Account Management
 
 ```java
-import fr.mrqsdf.vastia4j.model.AccountBalance;
-import fr.mrqsdf.vastia4j.model.CurrentUser;
+import fr.mrqsdf.vastai4j.model.AccountBalance;
+import fr.mrqsdf.vastai4j.model.CurrentUser;
 
 AccountBalance balance = vast.account().getBalance();
-System.out.println("Available credit: " + balance.credit());
+System.out.
+
+println("Available credit: "+balance.credit());
 
 CurrentUser currentUser = vast.account().getClient();
-System.out.println("User: " + currentUser.getUsername());
+System.out.
+
+println("User: "+currentUser.getUsername());
 ```
 
 ### GPU Offer Search
 
 ```java
-import fr.mrqsdf.vastia4j.query.*;
+import fr.mrqsdf.vastai4j.query.*;
 
 OfferQuery query = new OfferQuery()
         .where(OfferField.GPU_NAME, Op.EQ, "RTX 4090")
@@ -130,14 +134,20 @@ OfferQuery query = new OfferQuery()
         .limit(20);
 
 var offers = vast.offers().searchNew(query);
-offers.forEach(o -> System.out.printf("%s @ %s$/h%n", o.gpuName(), o.pricePerHourUSD()));
+offers.
+
+forEach(o ->System.out.
+
+printf("%s @ %s$/h%n",o.gpuName(),o.
+
+pricePerHourUSD()));
 ```
 
 ### Instance Management
 
 ```java
-import fr.mrqsdf.vastia4j.model.instance.CreateInstanceRequest;
-import fr.mrqsdf.vastia4j.model.instance.RunType;
+import fr.mrqsdf.vastai4j.model.instance.CreateInstanceRequest;
+import fr.mrqsdf.vastai4j.model.instance.RunType;
 
 CreateInstanceRequest req = new CreateInstanceRequest()
         .templateHashId("your-template-hash")
@@ -147,10 +157,20 @@ CreateInstanceRequest req = new CreateInstanceRequest()
         .label("exp-train-01");
 
 var created = vast.instances().createInstance(offerId, req);
-System.out.println("Created instance id: " + created.newContract());
+System.out.
+
+println("Created instance id: "+created.newContract());
 
 var details = vast.instances().show(created.newContract());
-System.out.println("SSH: " + details.instances().sshHost() + ":" + details.instances().sshPort());
+System.out.
+
+println("SSH: "+details.instances().
+
+sshHost() +":"+details.
+
+instances().
+
+sshPort());
 ```
 
 ### Event System
@@ -166,57 +186,57 @@ VastIA4J ships an **EventBus** and an **InstanceMonitor** that polls the Vast AP
 #### 1) Create a listener
 
 ```java
-import fr.mrqsdf.vastia4j.event.*;
-import fr.mrqsdf.vastia4j.event.instance.*;
+import fr.mrqsdf.vastai4j.event.*;
+import fr.mrqsdf.vastai4j.event.instance.*;
 
 public final class MyInstanceListener implements Listener {
 
-    @EventHandler(priority = EventPriority.LOW)
-    public void onState(InstanceStateChangeEvent e) {
-        System.out.printf("[STATE] #%d %s -> %s | actual %s -> %s%n",
-                e.instanceId(), e.previousCurState(), e.newCurState(),
-                e.previousActualStatus(), e.newActualStatus());
-    }
+  @EventHandler(priority = EventPriority.LOW)
+  public void onState(InstanceStateChangeEvent e) {
+    System.out.printf("[STATE] #%d %s -> %s | actual %s -> %s%n",
+            e.instanceId(), e.previousCurState(), e.newCurState(),
+            e.previousActualStatus(), e.newActualStatus());
+  }
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onSsh(InstanceSshReadyEvent e) {
-        System.out.printf("[SSH] #%d %s:%d ready%n",
-                e.instanceId(), e.sshHost(), e.sshPort());
-    }
+  @EventHandler(priority = EventPriority.NORMAL)
+  public void onSsh(InstanceSshReadyEvent e) {
+    System.out.printf("[SSH] #%d %s:%d ready%n",
+            e.instanceId(), e.sshHost(), e.sshPort());
+  }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPorts(InstancePortsMappedEvent e) {
-        System.out.printf("[PORTS] #%d ip=%s map=%s%n",
-                e.instanceId(), e.publicIpOrHost(), e.mapping());
-    }
+  @EventHandler(priority = EventPriority.MONITOR)
+  public void onPorts(InstancePortsMappedEvent e) {
+    System.out.printf("[PORTS] #%d ip=%s map=%s%n",
+            e.instanceId(), e.publicIpOrHost(), e.mapping());
+  }
 }
 ```
 
 #### 2) Register the listener and start the monitor
 
 ```java
-import fr.mrqsdf.vastia4j.VastAI;
-import fr.mrqsdf.vastia4j.event.EventBus;
-import fr.mrqsdf.vastia4j.monitor.InstanceMonitor;
+import fr.mrqsdf.vastai4j.VastAI;
+import fr.mrqsdf.vastai4j.event.EventBus;
+import fr.mrqsdf.vastai4j.monitor.InstanceMonitor;
 
 import java.util.concurrent.TimeUnit;
 
 public final class EventsQuickStart {
-    public static void main(String[] args) throws Exception {
-        VastAI vast = new VastAI("YOUR_API_KEY");
+  public static void main(String[] args) throws Exception {
+    VastAI vast = new VastAI("YOUR_API_KEY");
 
-        EventBus bus = new EventBus();
-        bus.register(new MyInstanceListener());
+    EventBus bus = new EventBus();
+    bus.register(new MyInstanceListener());
 
-        try (InstanceMonitor monitor = new InstanceMonitor(vast, bus)) {
-            long instanceId = 123456L;
-            // poll every 2 seconds
-            monitor.watch(instanceId, 2, TimeUnit.SECONDS);
+    try (InstanceMonitor monitor = new InstanceMonitor(vast, bus)) {
+      long instanceId = 123456L;
+      // poll every 2 seconds
+      monitor.watch(instanceId, 2, TimeUnit.SECONDS);
 
-            // demo: run for 60s
-            Thread.sleep(60_000);
-        }
+      // demo: run for 60s
+      Thread.sleep(60_000);
     }
+  }
 }
 ```
 
