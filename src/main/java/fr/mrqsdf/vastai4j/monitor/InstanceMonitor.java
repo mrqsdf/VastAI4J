@@ -86,24 +86,24 @@ public final class InstanceMonitor implements AutoCloseable {
             if (prev == null) {
                 last.put(id, new Snapshot(cur, act, ssh, portsMapped));
                 // première observation: si déjà ssh dispo / mapping présent, on peut émettre les events « ready »
-                if (ssh) bus.call(new InstanceSshReadyEvent(id, p.sshHost(), p.sshPort()));
-                if (portsMapped) bus.call(new InstancePortsMappedEvent(id, p.ports(), getIpOrHost(p)));
+                if (ssh) bus.call(new InstanceSshReadyEvent(id, p.sshHost(), p.sshPort(), this));
+                if (portsMapped) bus.call(new InstancePortsMappedEvent(id, p.ports(), getIpOrHost(p), this));
                 return;
             }
 
             // Changement d’état?
             if (!Objects.equals(prev.curState, cur) || !Objects.equals(prev.actualStatus, act)) {
-                bus.call(new InstanceStateChangeEvent(id, prev.curState, cur, prev.actualStatus, act));
+                bus.call(new InstanceStateChangeEvent(id, prev.curState, cur, prev.actualStatus, act, this));
             }
 
             // SSH vient d’apparaître ?
             if (!prev.sshReady && ssh) {
-                bus.call(new InstanceSshReadyEvent(id, p.sshHost(), p.sshPort()));
+                bus.call(new InstanceSshReadyEvent(id, p.sshHost(), p.sshPort(), this));
             }
 
             // Mapping de ports Docker vient d’apparaître ?
             if (!prev.portsMapped && portsMapped) {
-                bus.call(new InstancePortsMappedEvent(id, p.ports(), getIpOrHost(p)));
+                bus.call(new InstancePortsMappedEvent(id, p.ports(), getIpOrHost(p), this));
             }
 
             last.put(id, new Snapshot(cur, act, ssh, portsMapped));
